@@ -41,9 +41,9 @@ export default {
     // <!--验证手机号是否合法-->
     let checkTel = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error(' '))
+        callback(new Error(' 手机号不能为'))
       } else if (!this.checkMobile(value)) {
-        callback(new Error(' '))
+        callback(new Error('手机号有误'))
       } else {
         callback()
       }
@@ -51,7 +51,7 @@ export default {
     // <!--验证密码-->
     let validatePass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error(' '))
+        callback(new Error('密码不能为空 '))
       } else {
         if (this.ruleForm.checkPass !== '') {
           this.$refs.ruleForm.validateField('checkPass')
@@ -79,6 +79,7 @@ export default {
   },
   methods: {
     // 验证手机号
+    //正则表达式
     checkMobile (str) {
       let re = /^1\d{10}$/
       if (re.test(str)) {
@@ -89,54 +90,23 @@ export default {
     },
     // <!--提交登录-->
     submitForm (formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          axios.post('https://www.xiaoqw.online/smallFrog-bookstore/server/login.php', {
-            username: this.ruleForm.tel,
-            password: this.ruleForm.pass
-          }).then(response => { // 用户名和密码将转为json传到后台接口
-            let res = response.data // 用res承接返回后台的json文件(像使用数组那样)
-            // eslint-disable-next-line eqeqeq
-            if (true) { // 显示登录结果res.status == '1'
-              console.log('登录成功')
-              this.$message({
-                showClose: true,
-                message: '登录成功！',
-                type: 'success',
-                center: true
-              })
+      if (true) { // 显示登录结果//res.status == '1'
+        console.log('登录成功')
+        this.$message({
+          showClose: true,
+          message: '登录成功！',
+          type: 'success',
+          center: true
+        })
+        this.$router.push({
+          path: '/home'
+        })
+      }
+        this.$cookies.set('status', 'logined')
+        this.$cookies.set('user_ID', res.ID)
+        this.$cookies.set('Avatar', res.Avatar)
 
-              this.$cookies.set('status', 'logined')
-              this.$cookies.set('user_ID', res.ID)
-              this.$cookies.set('Avatar', res.Avatar)
 
-              this.$router.push({
-                path: '/home'
-              })
-              // eslint-disable-next-line eqeqeq
-            } else if (res.status == '0') {
-              console.log('账号或密码错误！')
-              this.$message({
-                showClose: true,
-                message: '账号或密码错误！',
-                type: 'error',
-                center: true
-              })
-            } else {
-              console.log('登录失败')
-              this.$message({
-                showClose: true,
-                message: '登录失败！请稍后重试！',
-                type: 'error',
-                center: true
-              })
-            }
-          })
-        } else {
-          console.log('账号或密码错误！')
-          return false
-        }
-      })
     },
     toReg () {
       this.$router.push({
@@ -145,6 +115,7 @@ export default {
     }
   }
 }
+
 </script>
 
 <style>

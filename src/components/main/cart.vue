@@ -27,7 +27,7 @@
                 <div v-for="(book, index) in cart" :key="index">
                     <el-row type="flex" align="middle">
                         <el-col :span="3" class="bookRow">
-                            <img class="bookImg" :src="'https://www.xiaoqw.online/smallFrog-bookstore/img/' + book.book_Img">
+                            <img class="bookImg" :src="'img/' + book.book_Img">
                         </el-col>
                         <el-col :span="9" class="bookRow">{{ book.book_Name }}</el-col>
                         <el-col :span="3" class="bookRow">{{ book.unit_Price }}</el-col>
@@ -89,75 +89,75 @@
 </template>
 
 <script>
-import axios from 'axios'
+    import axios from "axios";
 
-export default {
-  inject: ['reload'],
-  data () {
-    return {
-      cart: [],
-      count: 0,
-      totalPrice: 0
+    export default {
+        inject: ['reload'],
+        data() {
+            return {
+                cart: [],
+                count: 0,
+                totalPrice: 0
+            }
+        },
+        created() {
+            var address = "userCart.php";
+            var user_ID = this.$cookies.get('user_ID');
+            var count = 0;
+            var totalPrice = 0;
+
+            // axios.post(address, user_ID).then(res => {
+            //     this.cart = res.data; //获取数据
+            //     console.log("success");
+            //     console.log(this.cart);
+            //
+            //     for (let i = 0; i < this.cart.length; i++) {
+            //         count += parseFloat(this.cart[i].count);
+            //         totalPrice += parseFloat(this.cart[i].unit_Price * this.cart[i].count);
+            //     }
+            //     this.count = count;
+            //     this.totalPrice = totalPrice;
+            // });
+        },
+        methods: {
+            cartDelete(e) {
+                var address = "cartDelete.php";
+
+                // axios.post(address, {
+                //     user_ID: e.user_ID,
+                //     book_ID: e.book_ID
+                // }).then(response => {
+                //     console.log('删除成功');
+                //     this.$message({
+                //         showClose: true,
+                //         message: '删除成功！',
+                //         type: 'success',
+                //         center: true
+                //     });
+                //     this.reload();
+                //
+                // });
+            },
+            toSettle() {
+                if (!this.cart[0]) {
+                    this.$message({
+                        showClose: true,
+                        message: '购物车里还没有商品噢！',
+                        type: 'warning',
+                        center: true
+                    });
+                }
+                else {
+                    this.$router.push({
+                        path: "/shopping/settle",
+                        query: {
+                            cart: this.cart
+                        }
+                    });
+                }
+            }
+        }
     }
-  },
-  created () {
-    var address = 'https://www.xiaoqw.online/smallFrog-bookstore/server/userCart.php'
-    // eslint-disable-next-line camelcase
-    var user_ID = this.$cookies.get('user_ID')
-    var count = 0
-    var totalPrice = 0
-
-    axios.post(address, user_ID).then(res => {
-      this.cart = res.data // 获取数据
-      console.log('success')
-      console.log(this.cart)
-
-      for (let i = 0; i < this.cart.length; i++) {
-        count += parseFloat(this.cart[i].count)
-        totalPrice += parseFloat(this.cart[i].unit_Price * this.cart[i].count)
-      }
-      this.count = count
-      this.totalPrice = totalPrice
-    })
-  },
-  methods: {
-    cartDelete (e) {
-      var address = 'https://www.xiaoqw.online/smallFrog-bookstore/server/cartDelete.php'
-
-      axios.post(address, {
-        user_ID: e.user_ID,
-        book_ID: e.book_ID
-      }).then(response => {
-        console.log('删除成功')
-        this.$message({
-          showClose: true,
-          message: '删除成功！',
-          type: 'success',
-          center: true
-        })
-        this.reload()
-
-      })
-    },
-    toSettle () {
-      if (!this.cart[0]) {
-        this.$message({
-          showClose: true,
-          message: '购物车里还没有商品噢！',
-          type: 'warning',
-          center: true
-        })
-      } else {
-        this.$router.push({
-          path: '/shopping/settle',
-          query: {
-            cart: this.cart
-          }
-        })
-      }
-    }
-  }
-}
 </script>
 
 <style scoped>

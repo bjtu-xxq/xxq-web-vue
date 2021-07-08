@@ -59,7 +59,8 @@ export default new Router({
                     component: category,
                     meta: {
                         keepAlive: true,
-                        title: '书籍分类'
+                        title: '书籍分类',
+                      permission: true
                     }
                 },
                 {
@@ -92,7 +93,7 @@ export default new Router({
                     component: cart,
                     meta: {
                         title: '购物车',
-                        permission: true
+
                     }
                 },
                 {
@@ -101,7 +102,7 @@ export default new Router({
                     component: settle,
                     meta: {
                         title: '确认订单',
-                        permission: true
+
                     }
                 },
                 {
@@ -110,7 +111,7 @@ export default new Router({
                     component: pay,
                     meta: {
                         title: '在线支付',
-                        permission: true
+
                     }
                 },
                 {
@@ -119,7 +120,7 @@ export default new Router({
                     component: order,
                     meta: {
                         title: '我的订单',
-                        permission: true
+
                     }
                 },
                 {
@@ -128,7 +129,7 @@ export default new Router({
                     component: setting,
                     meta: {
                         title: '个人中心',
-                        permission: true
+
                     }
                 },
                 {

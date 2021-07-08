@@ -4,14 +4,14 @@
             <el-col :span="7">
                 <div class="colBack">
                     <el-card class="newCard" v-for="(book, index) in newPcBooks" :key="index">
-                        <el-image class="newImg" @click="toInfo(book)" :src="'https://www.xiaoqw.online/smallFrog-bookstore/img/' + book.img"></el-image>
+                        <el-image class="newImg" @click="toInfo(book)" :src="'img/' + book.img"></el-image>
                     </el-card>
                 </div>
             </el-col>
             <el-col :span="7">
                 <div class="colBack">
                     <el-card class="newCard" v-for="(book, index) in newEnBooks" :key="index">
-                        <el-image class="newImg" @click="toInfo(book)" :src="'https://www.xiaoqw.online/smallFrog-bookstore/img/' + book.img"></el-image>
+                        <el-image class="newImg" @click="toInfo(book)" :src="'img/' + book.img"></el-image>
                     </el-card>
                 </div>
             </el-col>
@@ -38,7 +38,7 @@ export default {
     }
   },
   created () {
-    var address = 'https://www.xiaoqw.online/smallFrog-bookstore/server/newBooks.php'
+    var address = 'newBooks'
 
     // eslint-disable-next-line no-unused-expressions
     axios.post(address, 1).then(res => {

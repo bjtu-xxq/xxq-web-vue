@@ -38,7 +38,7 @@
                     <div class="commodity" v-for="(book, index) in cart" :key="index">
                         <el-row type="flex" align="middle">
                             <el-col :span="3">
-                                <img class="bookImg" :src="'https://www.xiaoqw.online/smallFrog-bookstore/img/' + book.book_Img">
+                                <img class="bookImg" :src="'img/' + book.book_Img">
                             </el-col>
                             <el-col :span="9">{{ book.book_Name }}</el-col>
                             <el-col :span="6">{{ book.unit_Price }}</el-col>
@@ -133,7 +133,7 @@ export default {
     }
   },
   created () {
-    var address = 'https://www.xiaoqw.online/smallFrog-bookstore/server/settleUserInfo.php'
+    var address = 'settleUserInfo'
     // eslint-disable-next-line camelcase
     var user_ID = this.$cookies.get('user_ID')
     let count = 0

@@ -5,7 +5,7 @@
         </div>
         <div v-loading="loading" class="bookInfo">
             <el-card class="box-card leftInfo">
-                <img style="height: 310px;" :src="'https://www.xiaoqw.online/smallFrog-bookstore/img/' + this.bookInfo.img">
+                <img style="height: 310px;" :src="'img/' + this.bookInfo.img">
                 <div style="display: flex; margin-top: 20px; align-items: center;">
                     <div style="color: #606266;">推荐程度：</div>
                     <el-rate style="margin-top: 4px;" v-model="bookInfo.Commend" :colors="colors" disabled></el-rate>
@@ -54,15 +54,16 @@ export default {
   },
   methods: {
     getInfo () {
-      var address = 'https://www.xiaoqw.online/smallFrog-bookstore/server/bookInfo.php'
+      var address = 'bookInfo'
 
-      axios.post(address, {
-        ID: this.$route.query.ID
-      }).then(res => {
-        this.bookInfo = res.data // 获取数据
-        console.log('success')
+      // axios.post(address, {
+      //   ID: this.$route.query.ID
+      // }).then(res => {
+        this.bookInfo = [{"ID":"3002","Name":"活着","Author":"余华","Category":"3","Commend":"4.4","Price":"20","img":"jpg"}]
+
+      console.log('success')
         console.log(this.bookInfo)
-      })
+    //  })
       this.loading = false
     },
     handleChange (value) {
@@ -72,24 +73,24 @@ export default {
       this.$router.go(-1)
     },
     addToCart (e) {
-      var address = 'https://www.xiaoqw.online/smallFrog-bookstore/server/addToCart.php'
+      var address = 'addToCart'
 
       // eslint-disable-next-line eqeqeq
       if (this.$cookies.get('status') == 'logined') {
-        axios.post(address, {
-          user_ID: this.$cookies.get('user_ID'),
-          book_ID: e.ID,
-          book_Img: e.img,
-          book_Name: e.Name,
-          unit_Price: e.Price,
-          count: this.num
-        }).then(res => {
-          console.log('success')
+        // axios.post(address, {
+        //   user_ID: this.$cookies.get('user_ID'),
+        //   book_ID: e.ID,
+        //   book_Img: e.img,
+        //   book_Name: e.Name,
+        //   unit_Price: e.Price,
+        //   count: this.num
+        // }).then(res => {
+        //   console.log('success')
           this.$message({
             type: 'success',
             message: '成功加入购物车！'
           })
-        })
+      //  })
       } else {
         this.$confirm('您尚未登录！', 'smallFrog', {
           confirmButtonText: '去登陆',
@@ -110,10 +111,9 @@ export default {
       this.cart[0]['unit_Price'] = this.bookInfo.Price
       this.cart[0]['count'] = this.num
     },
-    toSettle () {
-      // eslint-disable-next-line eqeqeq,no-constant-condition
-
-      if (true) {//this.$cookies.get('status') == 'logined'
+   /* toSettle () {
+      // eslint-disable-next-line eqeqeq
+      if (this.$cookies.get('status') == 'logined') {
         this.setCart()
 
         this.$router.push({
@@ -133,7 +133,7 @@ export default {
           })
         })
       }
-    }
+    }*/
   }
 }
 </script>

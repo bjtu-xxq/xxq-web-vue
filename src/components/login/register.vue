@@ -46,9 +46,9 @@ export default {
     // <!--验证手机号是否合法-->
     let checkTel = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error(' '))
+        callback(new Error(' 手机号不能为空'))
       } else if (!this.checkMobile(value)) {
-        callback(new Error(' '))
+        callback(new Error('手机号有误 '))
       } else {
         callback()
       }
@@ -56,7 +56,7 @@ export default {
     // <!--验证密码-->
     let validatePass1 = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error(' '))
+        callback(new Error(' 密码不能为空'))
       } else {
         if (this.ruleForm.checkPass !== '') {
           this.$refs.ruleForm.validateField('checkPass')
@@ -67,9 +67,9 @@ export default {
     // <!--二次验证密码-->
     let validatePass2 = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error(' '))
+        callback(new Error('不能为空 '))
       } else if (value !== this.ruleForm.pass) {
-        callback(new Error(' '))
+        callback(new Error(' 两次密码不一致'))
       } else {
         callback()
       }
@@ -108,15 +108,8 @@ export default {
     },
     // <!--提交注册-->
     submitForm (formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          axios.post('https://www.xiaoqw.online/smallFrog-bookstore/server/register.php', {
-            username: this.ruleForm.tel,
-            password: this.ruleForm.pass
-          }).then(response => { // 用户名和密码将转为json传到后台接口
-            let res = response.data // 用res承接返回后台的json文件(像使用数组那样)
-            // eslint-disable-next-line eqeqeq
-            if (res.status == '1') { // 显示登录结果
+
+            if (this.ruleForm.checkPass==this.ruleForm.pass) { // 显示登录结果
               console.log('注册成功')
               this.$message({
                 showClose: true,
@@ -129,15 +122,8 @@ export default {
                 path: '/login'
               })
               // eslint-disable-next-line eqeqeq
-            } else if (res.status == '0') { // 显示登录结果
-              console.log('账户名已被使用！')
-              this.$message({
-                showClose: true,
-                message: '账户名已被使用！',
-                type: 'error',
-                center: true
-              })
-            } else {
+            }
+            else{
               console.log('注册失败')
               this.$message({
                 showClose: true,
@@ -146,12 +132,6 @@ export default {
                 center: true
               })
             }
-          })
-        } else {
-          console.log('抱歉！注册失败！请稍后重试！')
-          return false
-        }
-      })
     },
     toLog () {
       this.$router.push({

@@ -18,7 +18,7 @@
             <div class="recLine" data-wow-duration="2s" v-for="(books, index) in transRecBooks" :key="index">
                 <div v-for="(book, index) in books" :key="index">
                     <el-card slot="reference" class="wow slideInUp card" :body-style="{ padding: '0px' }">
-                        <img class="img" @click="toInfo(book)" :src="'http://www.xiaoqw.online/smallFrog-bookstore/img/' + book.img">
+                        <img class="img" @click="toInfo(book)" :src="book.img">
                       <div class="mask">
                             <el-link class="name" @click="toInfo(book)" :underline="false">
                                 <i class="el-icon-reading readIcon"></i>
@@ -34,64 +34,62 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 // import animate from 'animate.css'
 // import {WOW} from 'wowjs';
 
 export default {
-  data () {
-    return {
-      recBooks: [],
-      transRecBooks: []
-    }
-  },
-  created () {
-    var address = 'https://www.xiaoqw.online/smallFrog-bookstore/server/recommend.php'
+  data() {
+            return {
+                recBooks: [],
+                transRecBooks: [],
+            }
+        },
+        created() {
+            // var address = "recommend";
+            //
+            // axios.post(address).then(res => {
+//这里是ES6的写法，get请求的地址
+                this.recBooks = [{"ID":"3002","Name":"活着","Author":"余华","Language":"1","Category":"3","Commend":"4.4","Price":"20","img":"jpg"}]
+                console.log("success");
+                console.log(this.recBooks);
+                this.transRec();
 
-    axios.post(address).then(res => {
-      // 这里是ES6的写法，get请求的地址
-      this.recBooks = res.data // 获取数据
-      console.log('success')
-      console.log(this.recBooks)
-      this.transRec()
-    })
-  },
-  // mounted() {
-  // eslint-disable-next-line no-mixed-spaces-and-tabs
+        },
+        // mounted() {
     	// // 在项目加载完成之后初始化wow
-  //     var options={
-  //         //默认为true
-  //         live:false
-  //     };
-  //     var wow=new WOW(options);
-  // },
-  methods: {
-    transRec () {
-      var Arr = []
-      for (var i = 0, idx = -1; i < this.recBooks.length; i++) {
-        // eslint-disable-next-line eqeqeq
-        i % 4 == 0 && idx++
-        // eslint-disable-next-line eqeqeq
-        if (Object.prototype.toString.call(Arr[idx]) != '[object Array]') { Arr[idx] = [] }
-        Arr[idx].push(this.recBooks[i])
-      }
-      this.transRecBooks = Arr
-    },
-    toInfo (e) {
-      this.$router.push({
-        path: '/bookInfo',
-        query: {
-          ID: e.ID
+        //     var options={
+        //         //默认为true
+        //         live:false
+        //     };
+        //     var wow=new WOW(options);
+        // },
+        methods: {
+            transRec() {
+                var Arr = [];
+                for (var i = 0, idx = -1; i < this.recBooks.length; i++) {
+                    i % 4 == 0 && idx++;
+                    if (Object.prototype.toString.call(Arr[idx]) != "[object Array]")
+                        Arr[idx] = [];
+                    Arr[idx].push(this.recBooks[i]);
+                }
+                this.transRecBooks = Arr;
+            },
+            toInfo(e) {
+                this.$router.push({
+                    path: "/bookInfo",
+                    query: {
+                        ID: e.ID
+                    }
+                });
+            },
+            toCate(e) {
+                this.$router.push({
+                    path: "/category",
+                });
+            }
         }
-      })
-    },
-    toCate (e) {
-      this.$router.push({
-        path: '/category'
-      })
     }
-  }
-}
 </script>
 
 <style scoped>
