@@ -132,6 +132,14 @@ export default new Router({
 
                     }
                 },
+              {
+                    path: '/myshop',
+                    name: 'myshop',
+                    component: setting,
+                    meta: {
+                        title: '我的店铺',
+                    }
+              },
                 {
                     path: '/403',
                     name: 'permission',

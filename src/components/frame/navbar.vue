@@ -24,7 +24,7 @@
                         <el-dropdown>
                             <el-avatar :src="this.$cookies.get('Avatar')" @error="errorHandler"></el-avatar>
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item icon="el-icon-setting"><label @click="setting()">个人中心</label></el-dropdown-item>
+                                <el-dropdown-item icon="*"><label @click="setting()">个人中心</label></el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-circle-close"><label @click="exit()">退出登录</label></el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
@@ -33,8 +33,10 @@
 
                 <el-col :xs="8" :sm="4" :md="5" :lg="4">
                     <div style="display: flex;">
+
                         <div class="cart" @click="toCart()"><i class="el-icon-s-goods cartIcon"></i>购物车</div>
                         <div class="order" @click="toOrder()"><i class="el-icon-s-order orderIcon"></i>订单</div>
+                        <div class="myshop" @click="toMyshop()"><i class="el-icon-s-goods myshopIcon"></i>个人店铺</div>
                     </div>
 
                     <!-- <el-menu :default-active="$route.path" router="true" class="el-menu-demo" mode="horizontal" active-text-color="#4F6E9D">
@@ -112,6 +114,23 @@ export default {
         }).then(() => {
           this.$router.push({
             path: '/login'
+          })
+        })
+      }
+    },
+    toMyshop(){
+      if (this.$cookies.get('status') == 'logined') {
+        this.$router.push({
+          path: '/order'
+        })
+      } else {
+        this.$confirm('您尚未登录！', 'smallFrog', {
+          confirmButtonText: '去登陆',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$router.push({
+            path: '/myshop'
           })
         })
       }
@@ -244,7 +263,25 @@ export default {
         font-size: 18px;
         margin-right: 10px;
     }
+    .nav .myshop{
+      width: 50%;
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+      color: #F5f5f5;
+      background-color: #4F6E9D;
+      font-size: 15px;
+      cursor: pointer;
+      /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
+    }
+    .nav .myshop:hover {
+      background-color: #7E9DCA;
+    }
 
+    .nav .myshopIcon {
+      font-size: 18px;
+      margin-right: 10px;
+    }
     .footer {
         background-color: #F2F6FC;
         text-align: center;
