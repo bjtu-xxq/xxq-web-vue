@@ -73,7 +73,7 @@ export default {
       this.$router.go(-1)
     },
     addToCart (e) {
-      var address = 'addToCart'
+      var address = 'addToCart';
 
       // eslint-disable-next-line eqeqeq
       if (this.$cookies.get('status') == 'logined') {

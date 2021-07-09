@@ -3,12 +3,12 @@
         <el-container>
             <div style="display: flex; margin-top: 40px;">
                 <div>
-                    <h1 class="homeTitle">SMALLFROG 书店</h1>
-                    <p class="content">我希望政通人和，使大家能安安静静坐下来，想一点事，读一点书，写一点文章。</p>
+                    <h1 class="homeTitle">饮茶先 书店</h1>
+                    <p class="content">想一点事，读一点书，写一点文章。</p>
                     <el-button class="startBtn" @click="toCate()">SHOPPING</el-button>
                 </div>
                 <div>
-                    <img class="indexImg" src="../../../static/background.png">
+                    <img class="indexImg" src="static/backgroud.png">
                 </div>
             </div>
         </el-container>
@@ -18,7 +18,7 @@
             <div class="recLine" data-wow-duration="2s" v-for="(books, index) in transRecBooks" :key="index">
                 <div v-for="(book, index) in books" :key="index">
                     <el-card slot="reference" class="wow slideInUp card" :body-style="{ padding: '0px' }">
-                        <img class="img" @click="toInfo(book)" :src="book.img">
+                        <img class="img" @click="toInfo(book)" src="static/left2.jpg">
                       <div class="mask">
                             <el-link class="name" @click="toInfo(book)" :underline="false">
                                 <i class="el-icon-reading readIcon"></i>
@@ -54,7 +54,6 @@ export default {
                 console.log("success");
                 console.log(this.recBooks);
                 this.transRec();
-
         },
         // mounted() {
     	// // 在项目加载完成之后初始化wow

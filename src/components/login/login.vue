@@ -2,7 +2,7 @@
     <div>
         <el-row>
             <el-col :span="12">
-                <img class="loginImg" src="../../../static/left.jpg">
+                <img class="loginImg" src="../../../static/left3.png">
             </el-col>
 
             <el-col :span="12">
@@ -90,7 +90,7 @@ export default {
     },
     // <!--提交登录-->
     submitForm (formName) {
-      if (true) { // 显示登录结果//res.status == '1'
+      if (this.checkMobile(this.ruleForm.tel)) { // 显示登录结果//res.status == '1'
         console.log('登录成功')
         this.$message({
           showClose: true,
@@ -101,10 +101,19 @@ export default {
         this.$router.push({
           path: '/home'
         })
-      }
         this.$cookies.set('status', 'logined')
         this.$cookies.set('user_ID', res.ID)
         this.$cookies.set('Avatar', res.Avatar)
+
+      }else{
+        console.log('登录失败')
+        this.$message({
+          showClose: true,
+          message: '登录失败！请稍后重试！',
+          type: 'error',
+          center: true
+        })
+      }
 
 
     },

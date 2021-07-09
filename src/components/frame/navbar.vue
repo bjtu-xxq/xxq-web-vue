@@ -6,7 +6,8 @@
                 <el-col :xs="16" :sm="13" :md="10" :lg="8">
                     <el-menu :default-active="$route.path" router="true" mode="horizontal" active-text-color="#4F6E9D">
                         <el-menu-item index="/home">首页</el-menu-item>
-                        <el-menu-item index="/category">书籍分类</el-menu-item>
+                        <el-menu-item index="/category">书籍分类
+                        </el-menu-item>
                         <el-menu-item index="/newProduct">待定</el-menu-item>
                         <el-menu-item index="/onSale">待定</el-menu-item>
                     </el-menu>

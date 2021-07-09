@@ -22,7 +22,7 @@
             <el-aside width="250px">
                 <el-card class="leftNav">
                     <img src="../../../static/cateNav.png" class="leftImg" />
-                    <div class="navItem" :class="index === showCategoryIndex ? 'cur' : ''" v-for="(item, index) in navItems" :key="index" @click="showCategory(index)">{{ item }}</div>
+                    <div class="navItem" :class="index == showCategoryIndex ? 'cur' : ''" v-for="(item, index) in navItems" :key="index" @click="showCategory(index)">{{ item }}</div>
                     <div class="navItem" @click="toTop()"><i class="el-icon-arrow-up" style="font-size: 23px;"></i></div>
                 </el-card>
             </el-aside>
@@ -30,7 +30,8 @@
             <el-main v-loading.fullscreen.lock="loading" element-loading-background="#FFFFFF">
                 <el-row>
                     <el-card class="row" v-for="(book, index) in Books[showCategoryIndex].slice((currentPage-1)*pagesize,currentPage*pagesize)" :key="index" :body-style="{ padding: '0px' }">
-                        <img class="img" @click="toInfo(book)" :src=" book.img">
+<!--                      //分页-->
+                        <img class="img" @click="toInfo(book)" src=" static/left2.jpg">
                         <el-link class="name" @click="toInfo(book)" :underline="false">
                             <i class="el-icon-reading readIcon"></i>
                             {{ book.Name }}
@@ -43,7 +44,7 @@
                                 <el-col :span="12">
                                     <button class="shop" @click="addToCart(book)">
                                         <i class="el-icon-shopping-bag-1 icon"></i>
-                                    </button>
+                                      </button>
                                 </el-col>
                             </el-row>
                             <el-rate class="rate" v-model="book.Commend" :colors="colors" disabled></el-rate>
@@ -73,9 +74,9 @@
                 bookPath: 1,
                 searchText: "", //搜索关键字
                 showCategoryIndex: 0,
-                navItems: ["全部书籍", "计算机类", "英语类", "其他类"],
+                navItems: ["全部书籍", "1类", "2类", "3类"],
                 Books: [
-                    []
+                 []
                 ],
                 currentPage: 1,
                 pagesize: 20
@@ -86,15 +87,19 @@
             window.addEventListener('scroll', this.handleScroll);
         },
         created() {
-            // var address1 = "allBooks.php";
-            // var address2 = "pcBooks.php";
-            // var address3 = "enBooks.php";
-            // var address4 = "otherBooks.php";
-            this.Books[0]=[{"ID":"3002","Name":"2","Author":"2","Language":"1","Category":"3","Commend":"4.4","Price":"20","img":"jpg"}],
-            this.Books[1]=[{"ID":"3011","Name":"1","Author":"2","Language":"2","Category":"3","Commend":"4","Price":"22","img":"sjpg"}],
-              this.Books[2]=[{"ID":"3020","Name":"3","Author":"3","Language":"1","Category":"3","Commend":"4","Price":"64","img":"jpg"}],
-           this.Books[3]=[{"ID":"3100","Name":"4","Author":"4","Language":"1","Category":"3","Commend":"3.8","Price":"28","img":"jpg"}]
-            // axios.post(address1).then(res => {
+
+          this.Books[0]=[{"ID":"3002","Name":"芜湖起飞","Author":"金牌厨师","Category":"3","Commend":"4.4","Price":"20","img":"jpg"},{"ID":"3011","Name":"1","Author":"2","Category":"3","Commend":"4","Price":"22","img":"sjpg"},{"ID":"3020","Name":"3","Author":"3","Category":"3","Commend":"4","Price":"64","img":"jpg"},{"ID":"3100","Name":"4","Author":"4","Category":"3","Commend":"3.8","Price":"28","img":"jpg"}],
+            this.Books[1]=[{"ID":"3011","Name":"1","Author":"2","Category":"3","Commend":"4","Price":"22","img":"sjpg"}],
+            this.Books[2]=[{"ID":"3020","Name":"3","Author":"3","Category":"3","Commend":"4","Price":"64","img":"jpg"}],
+            this.Books[3]=[{"ID":"3100","Name":"4","Author":"4","Category":"3","Commend":"3.8","Price":"28","img":"jpg"}]
+
+          this.loading = false;
+            // var address1 = "allBooks";
+            // var address2 = "1";
+            // var address3 = "2";
+            // var address4 = "3";
+            //
+            //  axios.post(address1).then(res => {
             //         this.Books[0] = res.data; //获取数据
             //         console.log("success");
             //         console.log(this.allBooks);
@@ -102,17 +107,17 @@
             //     axios.post(address2).then(res => {
             //         this.Books[1] = res.data; //获取数据
             //         console.log("success");
-            //         console.log(this.pcBooks);
+            //         console.log(this.1);
             //     }),
             //     axios.post(address3).then(res => {
             //         this.Books[2] = res.data; //获取数据
             //         console.log("success");
-            //         console.log(this.enBooks);
+            //         console.log(this.2);
             //     }),
             //     axios.post(address4).then(res => {
             //         this.Books[3] = res.data; //获取数据
             //         console.log("success");
-            //         console.log(this.otherBooks);
+            //         console.log(this.3);
             //         this.loading = false;
             //     })
         },
@@ -122,7 +127,7 @@
             },
             //第三步：用于存放页面函数
             handleScroll() {
-                this.scroll = $(window).height() + $(document).scrollTop()
+                this.scroll = $(window).height() + $(document).scrollTop()//可见高以及获取垂直滚动的距离  即当前滚动的地方的窗口顶端到整个页面顶端的距离
             },
             toTop() {
                 document.body.scrollTop = 0;

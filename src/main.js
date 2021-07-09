@@ -13,9 +13,9 @@ Vue.use(ElementUI)
 Vue.use(axios)
 Vue.config.productionTip = false
 
-// 设置反向代理，前端请求默认发送到 http://localhost:8625/api
+// 设置反向代理，前端请求默认发送到 http://localhost:8080/api
 // var axios = require('axios')
-// axios.defaults.baseURL = 'http://localhost:8625/api'
+// axios.defaults.baseURL = 'http://localhost:8080/api'
 // 全局注册，之后可在其他组件中通过 this.$axios 发送数据
 // Vue.prototype.$axios = axios
 
@@ -23,7 +23,7 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title + ' - smallFrog 书城'
     const role = VueCookies.get('user_ID');
     if (to.meta.permission && !role && (to.path == '/shopping/cart' || to.path == '/shopping/settle' || to.path == '/shopping/pay' || to.path == '/order' || to.path == '/setting')) {
-        next('/403'); 
+        next('/403');
     } else {
         next();
     }

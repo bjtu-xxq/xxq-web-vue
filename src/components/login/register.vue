@@ -2,7 +2,7 @@
     <div>
         <el-row>
             <el-col :span="12">
-                <img class="regImg" src="../../../static/left.jpg">
+                <img class="regImg" src="../../../static/left3.png">
             </el-col>
 
             <el-col :span="12">
@@ -109,7 +109,7 @@ export default {
     // <!--提交注册-->
     submitForm (formName) {
 
-            if (this.ruleForm.checkPass==this.ruleForm.pass) { // 显示登录结果
+            if (this.ruleForm.checkPass==this.ruleForm.pass&&this.checkMobile(this.ruleForm.tel)) { // 显示登录结果
               console.log('注册成功')
               this.$message({
                 showClose: true,
