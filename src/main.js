@@ -7,7 +7,7 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import VueCookies from 'vue-cookies'
-
+import comment from 'bright-comment'
 Vue.use(VueCookies)
 Vue.use(ElementUI)
 Vue.use(axios)
@@ -34,7 +34,8 @@ new Vue({
     el: '#app',
     router,
     components: {
-        App
+        App,
+      comment
     },
     template: '<App/>'
 })

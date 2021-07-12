@@ -1,13 +1,13 @@
 <template>
     <el-container>
+<!--      权限评论回复-->
         <el-header>
             <el-row class="nav" type="flex" align="middle">
                 <el-col :xs="0" :sm="2" :md="5" :lg="5" class="box hidden-xs-only"><img class="image" src="../../../static/logo.png" @click="toHome()"></el-col>
                 <el-col :xs="16" :sm="13" :md="10" :lg="8">
                     <el-menu :default-active="$route.path" router="true" mode="horizontal" active-text-color="#4F6E9D">
                         <el-menu-item index="/home">首页</el-menu-item>
-                        <el-menu-item index="/category">书籍分类
-                        </el-menu-item>
+                        <el-menu-item index="/category">书籍分类</el-menu-item>
                         <el-menu-item index="/newProduct">待定</el-menu-item>
                         <el-menu-item index="/onSale">待定</el-menu-item>
                     </el-menu>
@@ -31,12 +31,13 @@
                     </div>
                 </el-col>
 
-                <el-col :xs="8" :sm="4" :md="5" :lg="4">
+                <el-col :xs="8" :sm="5" :md="5" :lg="6">
                     <div style="display: flex;">
-
+                      <div class="myshop" @click="toMyshop()">
+                        <i class="el-icon-s-goods myshopIcon"></i>个人店铺</div>
                         <div class="cart" @click="toCart()"><i class="el-icon-s-goods cartIcon"></i>购物车</div>
                         <div class="order" @click="toOrder()"><i class="el-icon-s-order orderIcon"></i>订单</div>
-                        <div class="myshop" @click="toMyshop()"><i class="el-icon-s-goods myshopIcon"></i>个人店铺</div>
+
                     </div>
 
                     <!-- <el-menu :default-active="$route.path" router="true" class="el-menu-demo" mode="horizontal" active-text-color="#4F6E9D">
@@ -120,8 +121,9 @@ export default {
     },
     toMyshop(){
       if (this.$cookies.get('status') == 'logined') {
+
         this.$router.push({
-          path: '/order'
+          path: '/myshop'
         })
       } else {
         this.$confirm('您尚未登录！', 'smallFrog', {
@@ -130,7 +132,7 @@ export default {
           type: 'warning'
         }).then(() => {
           this.$router.push({
-            path: '/myshop'
+            path: '/login'
           })
         })
       }

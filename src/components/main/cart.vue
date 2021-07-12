@@ -106,55 +106,55 @@
             var count = 0;
             var totalPrice = 0;
 
-            // axios.post(address, user_ID).then(res => {
-            //     this.cart = res.data; //获取数据
-            //     console.log("success");
-            //     console.log(this.cart);
-            //
-            //     for (let i = 0; i < this.cart.length; i++) {
-            //         count += parseFloat(this.cart[i].count);
-            //         totalPrice += parseFloat(this.cart[i].unit_Price * this.cart[i].count);
-            //     }
-            //     this.count = count;
-            //     this.totalPrice = totalPrice;
-            // });
+            axios.post(address, user_ID).then(res => {
+                this.cart = res.data; //获取数据
+                console.log("success");
+                console.log(this.cart);
+
+                for (let i = 0; i < this.cart.length; i++) {
+                    count += parseFloat(this.cart[i].count);
+                    totalPrice += parseFloat(this.cart[i].unit_Price * this.cart[i].count);
+                }
+                this.count = count;
+                this.totalPrice = totalPrice;
+            });
         },
         methods: {
             cartDelete(e) {
                 var address = "cartDelete.php";
 
-                // axios.post(address, {
-                //     user_ID: e.user_ID,
-                //     book_ID: e.book_ID
-                // }).then(response => {
-                //     console.log('删除成功');
-                //     this.$message({
-                //         showClose: true,
-                //         message: '删除成功！',
-                //         type: 'success',
-                //         center: true
-                //     });
-                //     this.reload();
-                //
-                // });
-            },
-            toSettle() {
-                if (!this.cart[0]) {
+                axios.post(address, {
+                    user_ID: e.user_ID,
+                    book_ID: e.book_ID
+                }).then(response => {
+                    console.log('删除成功');
                     this.$message({
                         showClose: true,
-                        message: '购物车里还没有商品噢！',
-                        type: 'warning',
+                        message: '删除成功！',
+                        type: 'success',
                         center: true
                     });
-                }
-                else {
+                    this.reload();
+
+                });
+            },
+            toSettle() {
+                // if (!this.cart[0]) {
+                //     this.$message({
+                //         showClose: true,
+                //         message: '购物车里还没有商品噢！',
+                //         type: 'warning',
+                //         center: true
+                //     });
+                // }
+                // else {
                     this.$router.push({
                         path: "/shopping/settle",
                         query: {
                             cart: this.cart
                         }
                     });
-                }
+           //     }
             }
         }
     }

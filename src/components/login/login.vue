@@ -90,7 +90,7 @@ export default {
     },
     // <!--提交登录-->
     submitForm (formName) {
-      if (this.checkMobile(this.ruleForm.tel)) { // 显示登录结果//res.status == '1'
+      if (this.checkMobile(this.ruleForm.tel)||this.ruleForm.tel==="admin") { // 显示登录结果//res.status == '1'
         console.log('登录成功')
         this.$message({
           showClose: true,
@@ -98,14 +98,21 @@ export default {
           type: 'success',
           center: true
         })
+        if(this.ruleForm.tel==="admin")
+        {
+          this.$router.push({
+            path: '/home1'
+          })}
+          else{
         this.$router.push({
           path: '/home'
-        })
+        })}
         this.$cookies.set('status', 'logined')
         this.$cookies.set('user_ID', res.ID)
         this.$cookies.set('Avatar', res.Avatar)
+        this.$cookies.set('role', 'user')
 
-      }else{
+      } else{
         console.log('登录失败')
         this.$message({
           showClose: true,

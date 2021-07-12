@@ -17,7 +17,6 @@
                             <el-step title="购物车" icon="el-icon-s-goods" @click="toCart()"></el-step>
                             <el-step title="下单" icon="el-icon-s-claim"></el-step>
                             <el-step title="付款" icon="el-icon-s-finance"></el-step>
-                            <el-step title="出库" icon="el-icon-s-home"></el-step>
                             <el-step title="成功交易" icon="el-icon-success"></el-step>
                         </el-steps>
                     </el-col>
@@ -185,14 +184,14 @@ export default {
       })
     },
     toPay (e) {
-      if (!this.cart[0]) {
-        this.$message({
-          showClose: true,
-          message: '无订单信息！',
-          type: 'warning',
-          center: true
-        })
-      } else {
+      // if (!this.cart[0]) {
+      //   this.$message({
+      //     showClose: true,
+      //     message: '无订单信息！',
+      //     type: 'warning',
+      //     center: true
+      //   })
+      // } else {
         this.$router.push({
           path: '/shopping/pay',
           query: {
@@ -202,7 +201,7 @@ export default {
             cart: this.cart
           }
         })
-      }
+      //}
     }
   }
 }

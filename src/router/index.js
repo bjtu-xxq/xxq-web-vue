@@ -17,7 +17,13 @@ import pay from '@/components/main/pay'
 import order from '@/components/main/order'
 import permission from '@/components/main/403'
 import notFound from '@/components/main/404'
-
+import home1 from '../components/main/home1'
+import BusinessList from '../components/main/BusinessList'
+import ApplyCheck from '../components/main/ApplyCheck'
+import StoreList from '../components/main/StoreList'
+import myshop from '../components/main/myshop'
+import StoreInfo from '../components/main/StoreInfo'
+import successpay from '../components/main/successpay'
 Vue.use(Router)
 
 export default new Router({
@@ -25,6 +31,29 @@ export default new Router({
             path: '/',
             redirect: '/home'
         },
+      {
+        path: '/home1',
+        name: home1,
+        component: home1
+      },
+      {
+        path: '/BusinessList',
+        name: BusinessList,
+        component: BusinessList
+      },
+      {
+        path: '/StoreList',
+        name: StoreList,
+        component: StoreList
+      },
+
+
+      {
+        path: '/applyCheck',
+        name: ApplyCheck,
+        component: ApplyCheck
+      },
+
         {
             path: '/',
             name: 'navbar',
@@ -37,6 +66,11 @@ export default new Router({
                         title: '登录'
                     }
                 },
+              {
+                path: '/StoreInfo',
+                name: StoreInfo,
+                component: StoreInfo
+              },
                 {
                     path: '/register',
                     name: 'register',
@@ -45,6 +79,7 @@ export default new Router({
                         title: '账号注册'
                     }
                 },
+
                 {
                     path: '/home',
                     name: 'home',
@@ -96,6 +131,11 @@ export default new Router({
 
                     }
                 },
+              {
+                path: '/shopping/successpay',
+                name: 'successpay',
+                component: successpay
+              },
                 {
                     path: '/shopping/settle',
                     name: 'settle',
@@ -135,9 +175,9 @@ export default new Router({
               {
                     path: '/myshop',
                     name: 'myshop',
-                    component: setting,
+                    component: myshop,
                     meta: {
-                        title: '我的店铺',
+                        title: '我的店铺', keepAlive:false,//导航栏在该页面不予显示,
                     }
               },
                 {
@@ -156,6 +196,7 @@ export default new Router({
                         title: '404',
                     }
                 },
+
                 {
                     path: "*", // 此处需特别注意置于最底部
                     redirect: "/404"

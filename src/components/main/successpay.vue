@@ -3,8 +3,8 @@
     <div class="pay">
       <div class="viewBox">
         <div class="title">
-          <div class="slogan">支付界面</div>
-          <el-button class="submit" type="danger" @click="tosuccess()">支付完成</el-button>
+          <div class="slogan">成功交易</div>
+          <el-button class="submit" type="danger" @click="toMain">完成</el-button>
         </div>
         <el-divider></el-divider>
 
@@ -13,7 +13,7 @@
             <el-button icon="el-icon-caret-left" class="back" @click="goBack()">上一步</el-button>
           </el-col>
           <el-col :span="20">
-            <el-steps :active="2" finish-status="success" simple>
+            <el-steps :active="4" finish-status="success" simple>
               <el-step title="购物车" icon="el-icon-s-goods" @click="toCart()"></el-step>
               <el-step title="下单" icon="el-icon-s-claim"></el-step>
               <el-step title="付款" icon="el-icon-s-finance"></el-step>
@@ -77,12 +77,12 @@ export default {
         path: '/shopping/cart'
       })
     },
-    tosuccess(){
+    // 编辑操作
+    toMain(){
       this.$router.push({
-        path: '/shopping/successpay'
+        path: '/home'
       })
     },
-    // 编辑操作
     handleEdit () {
       this.editVisible = true
     },

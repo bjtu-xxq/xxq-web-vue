@@ -34,19 +34,25 @@
                 </div>
             </div>
         </div>
+
+
     </div>
 </template>
 
 <script>
 import axios from 'axios'
-
 export default {
+
   data () {
     return {
       loading: true,
-      bookInfo: [],
+      bookInfo: [{"ID":"3002","Name":"活着","Author":"余华","Language":"1","Category":"3","Commend":"4.4","Price":"20","img":"jpg"}],
       num: 1,
-      cart: [[]]
+      cart: [[]],
+      list:[
+        {id:'1',name:'李白',content:'抽刀断水水更流'},
+        {id:'2',name:'孟浩然',content:'千里江陵一日还'},
+      ]
     }
   },
   created () {
@@ -111,7 +117,7 @@ export default {
       this.cart[0]['unit_Price'] = this.bookInfo.Price
       this.cart[0]['count'] = this.num
     },
-   /* toSettle () {
+    toSettle () {
       // eslint-disable-next-line eqeqeq
       if (this.$cookies.get('status') == 'logined') {
         this.setCart()
@@ -133,7 +139,7 @@ export default {
           })
         })
       }
-    }*/
+    }
   }
 }
 </script>
