@@ -8,11 +8,13 @@ import router from './router'
 import axios from 'axios'
 import VueCookies from 'vue-cookies'
 import comment from 'bright-comment'
+import  qs from 'qs';
+Vue.prototype.$qs=qs
 Vue.use(VueCookies)
 Vue.use(ElementUI)
 Vue.use(axios)
 Vue.config.productionTip = false
-
+axios.defaults.withCredentials=true;
 // 设置反向代理，前端请求默认发送到 http://localhost:8080/api
 // var axios = require('axios')
 // axios.defaults.baseURL = 'http://localhost:8080/api'
@@ -20,7 +22,7 @@ Vue.config.productionTip = false
 // Vue.prototype.$axios = axios
 
 router.beforeEach((to, from, next) => {
-    document.title = to.meta.title + ' - smallFrog 书城'
+    document.title = to.meta.title + ' -  书城'
     const role = VueCookies.get('user_ID');
     if (to.meta.permission && !role && (to.path == '/shopping/cart' || to.path == '/shopping/settle' || to.path == '/shopping/pay' || to.path == '/order' || to.path == '/setting')) {
         next('/403');

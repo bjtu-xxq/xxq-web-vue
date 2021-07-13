@@ -10,11 +10,9 @@
 
         <el-submenu index="5">
           <template slot="title">我的店铺</template>
-
         </el-submenu>
       </el-menu>
     </div>
-
     <div style="margin-top: 2px">
       <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick()">
         <el-tab-pane label="图书管理" name="first">
@@ -114,41 +112,39 @@
           <el-table :data="orderList" style="width: 100%" height="250">
             <el-table-column prop="picture" label="商品" width="120">
               <template slot-scope="scope">
-                <img :src="scope.row.book.picPath" class="cover">
+                <img :src="orderList.picPath" class="cover">
               </template>
             </el-table-column>
 
             <el-table-column
               prop="name"
               width="300">
-              <template slot-scope="scope">{{ scope.row.book.name }}</template>
+              <template slot-scope="scope">{{ orderList.name }}</template>
             </el-table-column>
 
             <el-table-column prop="price" label="单价" width="80">
-              <template slot-scope="scope">{{ scope.row.book.price }}</template>
+              <template slot-scope="scope">{{ orderList.price }}</template>
             </el-table-column>
 
             <el-table-column prop="user" label="用户" width="200">
-              <template slot-scope="scope">{{ scope.row.user.username }}</template>
+              <template slot-scope="scope">{{ orderList.username }}</template>
             </el-table-column>
 
             <el-table-column prop="number" label="数量" show-overflow-tooltip>
               <template slot-scope="scope">
-                <el-input-number v-model="num" size="small" :min="1" :disabled="true">{{ scope.row.order.number }}</el-input-number>
+                <el-input-number v-model="num" size="small" :min="1" :disabled="true">{{orderList.number }}</el-input-number>
               </template>
             </el-table-column>
 
             <el-table-column prop="total" label="金额" width="120">
-              <template slot-scope="scope">{{ scope.row.order.totalPrice }}</template>
+              <template slot-scope="scope">{{ orderList.totalPrice }}</template>
             </el-table-column>
 
             <el-table-column
               prop="operation">
               <template slot-scope="scope">
-                <el-button size="medium" type="primary" plain @click="orderMoreInfo(scope.row.order.id)">详情</el-button>
-                <el-button style="margin-left: 10%" size="medium" type="success" plain v-if="scope.row.order.state === '已发货'" @click="sendBook(scope.row.order.id)" disabled>发货</el-button>
-                <el-button style="margin-left: 10%" size="medium" type="success" plain v-if="scope.row.order.state === '已支付'" @click="sendBook(scope.row.order.id)">发货</el-button>
-              </template>
+                <el-button size="medium" type="primary" plain @click="orderMoreInfo(orderList.id)">详情</el-button>
+                    </template>
             </el-table-column>
           </el-table>
         </el-tab-pane>
@@ -254,35 +250,35 @@
                 <div>
                   <el-form :label-position="labelPosition" label-width="80px" :model="orderInfo">
                     <el-form-item label="书籍名称">
-                      <el-input v-model="orderInfo.book.name" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.name" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
 
                     <el-form-item label="书籍单价">
-                      <el-input v-model="orderInfo.book.price" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.price" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
 
                     <el-form-item label="购买数量">
-                      <el-input v-model="orderInfo.order.number" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.number" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
 
                     <el-form-item label="金额总计">
-                      <el-input v-model="orderInfo.order.totalPrice" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.totalPrice" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
 
                     <el-form-item label="用户昵称">
-                      <el-input v-model="orderInfo.user.username" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.username" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
 
                     <el-form-item label="用户地址">
-                      <el-input v-model="orderInfo.user.address" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.address" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
 
                     <el-form-item label="用户电话">
-                      <el-input v-model="orderInfo.user.id" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.id" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
 
                     <el-form-item label="订单时间">
-                      <el-input v-model="orderInfo.order.placeDate" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.placeDate" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
                   </el-form>
 
@@ -453,232 +449,196 @@ export default {
       console.log(key, keyPath);
     },
 
-    handleClick(tab, event) {
-      // if(this.activeName === 'first') {
-      //   this.storeManage();
-      // }else {
-      //   alert("结果加载中，请稍候...");
-      //   this.$axios  // 获取已支付和已发货的订单
-      //     .post('order/all', {
-      //       phone: this.$session.get("key"), // 当前用户
-      //     })
-      //     .then(successResponse => {
-      //       if (successResponse.data.code === 200) {
-      //         var data = successResponse.data.data;
-      //         this.orderList = data;
-      //       }else {
-      //         alert(successResponse.data.message);
-      //       }
-      //     })
-      //     .catch(failResponse => {
-      //       alert("失败！");
-      //     })
-      // }
-    },
-
-    handleDelete(index, row) {
-      console.log(index, row);
-    },
-
-    showMain() {
-      this.$axios
-        .post('/book/renwensheke', {
-          id: this.$session.get("key"),
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            var data = successResponse.data.data;
-            this.$router.push({path: '/main', query: {mainList: data}});
-          }
-        })
-        .catch(failResponse => {
-          alert("失败！");
-        })
-    },
-
-    shopCart() {
-      this.$axios
-        .post('/cart/all', {
-          id: this.$session.get("key"),
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            var data = successResponse.data.data;
-            this.$router.push({path: '/shopCart', query: {cartList: data}});
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-          alert('失败！');
-        })
-    },
-
-    orderManage() {
-      this.$axios  // 获取未支付的订单
-        .post('/order/userweizhifu', {
-          userId: this.$session.get("key"), // 当前用户
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            var data = successResponse.data.data;
-            this.$router.push({path: '/order', query: {unPayList: data}});
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-          alert("失败！");
-        })
-    },
-
-    personalInfoSetting() {
-      this.$axios
-        .post('/entity', {
-          id: this.$session.get("key"),
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            var data = successResponse.data.data;
-            this.$router.push({path: '/personalSetting', query: {personalInfo: data}});
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-          alert('失败！');
-        })
-    },
-
-    storeManage() {
-      // this.$axios  // 获取图书
-      //   .post('/store/allbooks', {
-      //     phone: this.$session.get("key"), // 当前用户
-      //   })
-      //   .then(successResponse => {
-      //     if (successResponse.data.code === 200) {
-      //       alert(successResponse.data.message);
-      //       var data = successResponse.data.data;
-            this.reload();
-       //     this.$router.push({path: '/store', query: {booksList: data}});
-        //   }else {
-        //     alert(successResponse.data.message);
-        //   }
-        // })
-        // .catch(failResponse => {
-        //   alert("失败！");
-        // })
-    },
-
-    storeInfoSetting() {
-      // this.$axios
-      //   .post('/store/info', {
-      //     phone: this.$session.get("key"),
-      //   })
-      //   .then(successResponse => {
-      //     if (successResponse.data.code === 200) {
-      //       if((successResponse.data.message === "普通用户")) {
-      //         alert('无权限！');
-      //       }else {
-      //         var data = successResponse.data.data;
-              this.$router.push({path: '/StoreInfo'});
-              //, query: {storeInfo: data}
-        //     }
-        //   }else {
-        //     alert("查看失败，请重试！");
-        //   }
-        // })
-        // .catch(failResponse => {
-        //   alert('失败！');
-        // })
-    },
-
-    assistantNoPass() {
-      this.$axios  // 获取待审核的助理列表
-        .post('/store/all_assistant_application', {
-          phone: this.$session.get("key"), // 当前用户
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            if((successResponse.data.message === "普通用户") || (successResponse.data.message === "商家助理")) {
-              alert('无权限！');
-            }else {
-              var data = successResponse.data.data;
-              this.$router.push({path: '/assistantApply', query: {notPass: data}});
-            }
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-          alert("失败！");
-        })
-    },
-
-    moreInfo(id) {
-      // this.$axios // 书籍详情
-      //   .post('/book/info', {
-      //     id: id, // 查询书籍
-      //   })
-      //   .then(successResponse => {
-      //     if (successResponse.data.code === 200) {
-      //       this.bookInfo = successResponse.data.data;
-            this.bookDialog = true;
-        //   }else {
-        //     alert(successResponse.data.message);
-        //   }
-        // })
-        // .catch(failResponse => {
-        //   alert("失败！");
-        // })
-    },
-
-    updateBook(id) {
-      // this.$axios
-      //   .post('book/update', {
-      //     id: id,
-      //     name: this.bookInfo.name,
-      //     author: this.bookInfo.author,
-      //     publishingHouse: this.bookInfo.publishingHouse,
-      //     publishingDate: this.bookInfo.publishingDate,
-      //     price: this.bookInfo.price,
-      //     category: this.bookInfo.category,
-      //     introduction: this.bookInfo.introduction,
-      //   })
-      //   .then(successResponse => {
-      //     if (successResponse.data.code === 200) {
-      //       alert(successResponse.data.message);
-      //       var data = successResponse.data.data;
-            this.reload();
-            this.$router.push({path: '/myshop'});//, query: {booksList: data}
-        //     this.bookDialog = false;
-        //   }
-        // })
-        // .catch(failResponse => {
-        //   alert('失败！');
-        // })
-    },
-
-    deleteBook(id) {
-      this.$axios
-        .post('/book/delete', {
-          id: id, // 删除书籍编号
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            alert(successResponse.data.message);
-            var data = successResponse.data.data;
-            this.reload();
-            this.$router.push({path: '/store', query: {booksList: data}});
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-          alert("失败！");
-        })
-    },
-
+    // handleClick(tab, event) {
+    //   if(this.activeName === 'first') {
+    //     this.storeManage();
+    //   }else {
+    //     alert("结果加载中，请稍候...");
+    //     this.$axios  // 获取已支付和已发货的订单
+    //       .post('/order/'+this.$cookies.id,this.$cookies)
+    //       .then(successResponse => {
+    //         if (successResponse.data.code === 200) {
+    //           var data = successResponse.data.data;
+    //           this.orderList = data;
+    //         }else {
+    //           alert(successResponse.data.message);
+    //         }
+    //       })
+    //       .catch(failResponse => {
+    //         alert("失败！");
+    //       })
+    //   }
+    // },
+    //
+    // handleDelete(index, row) {
+    //   console.log(index, row);
+    // },
+    //
+    // orderManage() {
+    //   this.$axios  // 获取未支付的订单
+    //     .post('/order/userweizhifu', {
+    //       userId: this.$session.get("key"), // 当前用户
+    //     })
+    //     .then(successResponse => {
+    //       if (successResponse.data.code === 200) {
+    //         var data = successResponse.data.data;
+    //         this.$router.push({path: '/order', query: {unPayList: data}});
+    //       }else {
+    //         alert(successResponse.data.message);
+    //       }
+    //     })
+    //     .catch(failResponse => {
+    //       alert("失败！");
+    //     })
+    // },
+    //
+    // personalInfoSetting() {
+    //   this.$axios
+    //     .post('/entity', {
+    //       id: this.$session.get("key"),
+    //     })
+    //     .then(successResponse => {
+    //       if (successResponse.data.code === 200) {
+    //         var data = successResponse.data.data;
+    //         this.$router.push({path: '/personalSetting', query: {personalInfo: data}});
+    //       }else {
+    //         alert(successResponse.data.message);
+    //       }
+    //     })
+    //     .catch(failResponse => {
+    //       alert('失败！');
+    //     })
+    // },
+    //
+    // storeManage() {
+    //   this.$axios  // 获取图书
+    //     .post('/store/allbooks', {
+    //       phone: this.$session.get("key"), // 当前用户
+    //     })
+    //     .then(successResponse => {
+    //       if (successResponse.data.code === 200) {
+    //         alert(successResponse.data.message);
+    //         var data = successResponse.data.data;
+    //         this.reload();
+    //        this.$router.push({path: '/store', query: {booksList: data}});
+    //       }else {
+    //         alert(successResponse.data.message);
+    //       }
+    //     })
+    //     .catch(failResponse => {
+    //       alert("失败！");
+    //     })
+    // },
+    //
+    // storeInfoSetting() {
+    //   this.$axios
+    //     .post('/store/info', {
+    //       phone: this.$session.get("key"),
+    //     })
+    //     .then(successResponse => {
+    //       if (successResponse.data.code === 200) {
+    //         if((successResponse.data.message === "普通用户")) {
+    //           alert('无权限！');
+    //         }else {
+    //           var data = successResponse.data.data;
+    //           this.$router.push({path: '/StoreInfo'});
+    //           //, query: {storeInfo: data}
+    //         }
+    //       }else {
+    //         alert("查看失败，请重试！");
+    //       }
+    //     })
+    //     .catch(failResponse => {
+    //       alert('失败！');
+    //     })
+    // },
+    //
+    // assistantNoPass() {
+    //   this.$axios  // 获取待审核的助理列表
+    //     .post('/store/all_assistant_application', {
+    //       phone: this.$session.get("key"), // 当前用户
+    //     })
+    //     .then(successResponse => {
+    //       if (successResponse.data.code === 200) {
+    //         if((successResponse.data.message === "普通用户") || (successResponse.data.message === "商家助理")) {
+    //           alert('无权限！');
+    //         }else {
+    //           var data = successResponse.data.data;
+    //           this.$router.push({path: '/assistantApply', query: {notPass: data}});
+    //         }
+    //       }else {
+    //         alert(successResponse.data.message);
+    //       }
+    //     })
+    //     .catch(failResponse => {
+    //       alert("失败！");
+    //     })
+    // },
+    //
+     moreInfo(id) {
+    //   this.$axios // 书籍详情
+    //     .post('/book/info', {
+    //       id: id, // 查询书籍
+    //     })
+    //     .then(successResponse => {
+    //       if (successResponse.data.code === 200) {
+    //         this.bookInfo = successResponse.data.data;
+           this.bookDialog = true;
+    //       }else {
+    //         alert(successResponse.data.message);
+    //       }
+    //     })
+    //     .catch(failResponse => {
+    //       alert("失败！");
+    //     })
+     },
+    //
+    // updateBook(id) {
+    //   this.$axios
+    //     .post('book/update', {
+    //       id: id,
+    //       name: this.bookInfo.name,
+    //       author: this.bookInfo.author,
+    //       publishingHouse: this.bookInfo.publishingHouse,
+    //       publishingDate: this.bookInfo.publishingDate,
+    //       price: this.bookInfo.price,
+    //       category: this.bookInfo.category,
+    //       introduction: this.bookInfo.introduction,
+    //     })
+    //     .then(successResponse => {
+    //       if (successResponse.data.code === 200) {
+    //         alert(successResponse.data.message);
+    //         var data = successResponse.data.data;
+    //         this.reload();
+    //         this.$router.push({path: '/myshop'});//, query: {booksList: data}
+    //         this.bookDialog = false;
+    //       }
+    //     })
+    //     .catch(failResponse => {
+    //       alert('失败！');
+    //     })
+    // },
+    //
+    // deleteBook(id) {
+    //   this.$axios
+    //     .post('/book/delete', {
+    //       id: id, // 删除书籍编号
+    //     })
+    //     .then(successResponse => {
+    //       if (successResponse.data.code === 200) {
+    //         alert(successResponse.data.message);
+    //         var data = successResponse.data.data;
+    //         this.reload();
+    //         this.$router.push({path: '/store', query: {booksList: data}});
+    //       }else {
+    //         alert(successResponse.data.message);
+    //       }
+    //     })
+    //     .catch(failResponse => {
+    //       alert("失败！");
+    //     })
+    // },
+    //
     orderMoreInfo(id) {
       // this.$axios // 订单详情
       //   .post('order/info', {
@@ -688,17 +648,17 @@ export default {
       //   .then(successResponse => {
       //     if (successResponse.data.code === 200) {
       //       this.orderInfo = successResponse.data.data;
-            this.orderDialog = true;
-        //   }else {
-        //     alert(successResponse.data.message);
-        //   }
-        // })
-        // .catch(failResponse => {
-        //   alert("失败！");
-        // })
-    },
-
-    sendBook(id) {
+             this.orderDialog = true;
+      //     }else {
+      //       alert(successResponse.data.message);
+      //     }
+      //   })
+      //   .catch(failResponse => {
+      //     alert("失败！");
+      //   })
+    }
+    //
+    // sendBook(id) {
     //   this.$axios
     //     .post('/order/send', {
     //       id: id, // 订单编号
@@ -714,7 +674,7 @@ export default {
     //     .catch(failResponse => {
     //       alert('失败！');
     //     })
-    }
+    // }
   },
 
   // mounted() {

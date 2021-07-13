@@ -106,96 +106,96 @@
         console.log(key, keyPath);
       },
 
-    //   userFunction() {
-    //     this.$axios
-    //       .post('/user/all') // 请求用户列表
-    //       .then(successResponse => {
-    //         if (successResponse.data.code === 200) {
-    //           var data = successResponse.data.data;
-    //           this.$router.push({path: '/adminMain', query: {userList: data}});
-    //         }else {
-    //           alert(successResponse.data.message);
-    //         }
-    //       })
-    //       .catch(failResponse => {
-    //
-    //       })
-    //   },
-    //
-    //   businessFunction() {
-    //     this.$axios
-    //       .post('/business/all') // 请求商家列表
-    //       .then(successResponse => {
-    //         if (successResponse.data.code === 200) {
-    //           var data = successResponse.data.data;
-    //           this.businessInfo = data;
-    //         }else {
-    //           alert(successResponse.data.message);
-    //         }
-    //       })
-    //       .catch(failResponse => {
-    //
-    //       })
-    //   },
-    //
-    //   storeFunction() {
-    //     this.$axios
-    //       .post('/store/all') // 请求店铺列表
-    //       .then(successResponse => {
-    //         if (successResponse.data.code === 200) {
-    //           var data = successResponse.data.data;
-    //           this.$router.push({path: '/storeList', query: {storeList: data}});
-    //         }else {
-    //           alert(successResponse.data.message);
-    //         }
-    //       })
-    //       .catch(failResponse => {
-    //
-    //       })
-    //   },
-    //
-    //   checkFunction() {
-    //     this.$axios
-    //       .post('/business/applied') // 请求申请列表
-    //       .then(successResponse => {
-    //         if (successResponse.data.code === 200) {
-    //           var data = successResponse.data.data;
-    //           this.$router.push({path: '/applyCheck', query: {applyList: data}});
-    //         }else {
-    //           alert(successResponse.data.message);
-    //         }
-    //       })
-    //       .catch(failResponse => {
-    //
-    //       })
-    //   },
-    //
-    //   deleteBusiness(phone) {
-    //     alert(phone)
-    //     this.$axios
-    //       .post('/business/delete', {
-    //         phone: phone,
-    //       })
-    //       .then(successResponse => {
-    //         if (successResponse.data.code === 200) {
-    //           alert(successResponse.data.message);
-    //           var data = successResponse.data.data
-    //           this.reload()
-    //           this.$router.push({path: '/businessList', query: {businessList: data}});
-    //         }else {
-    //           alert(successResponse.data.message);
-    //         }
-    //       })
-    //       .catch(failResponse => {
-    //
-    //       })
-    //   }
-    // },
+      userFunction() {
+        this.$axios
+          .post('/user/all') // 请求用户列表
+          .then(successResponse => {
+            if (successResponse.data.code === 200) {
+              var data = successResponse.data.data;
+              this.$router.push({path: '/adminMain', query: {userList: data}});
+            }else {
+              alert(successResponse.data.message);
+            }
+          })
+          .catch(failResponse => {
+
+          })
+      },
+
+      businessFunction() {
+        this.$axios
+          .post('/business/all') // 请求商家列表
+          .then(successResponse => {
+            if (successResponse.data.code === 200) {
+              var data = successResponse.data.data;
+              this.businessInfo = data;
+            }else {
+              alert(successResponse.data.message);
+            }
+          })
+          .catch(failResponse => {
+
+          })
+      },
+
+      storeFunction() {
+        this.$axios
+          .post('/store/all') // 请求店铺列表
+          .then(successResponse => {
+            if (successResponse.data.code === 200) {
+              var data = successResponse.data.data;
+              this.$router.push({path: '/storeList', query: {storeList: data}});
+            }else {
+              alert(successResponse.data.message);
+            }
+          })
+          .catch(failResponse => {
+
+          })
+      },
+
+      checkFunction() {
+        this.$axios
+          .post('/business/applied') // 请求申请列表
+          .then(successResponse => {
+            if (successResponse.data.code === 200) {
+              var data = successResponse.data.data;
+              this.$router.push({path: '/applyCheck', query: {applyList: data}});
+            }else {
+              alert(successResponse.data.message);
+            }
+          })
+          .catch(failResponse => {
+
+          })
+      },
+
+      deleteBusiness(phone) {
+        alert(phone)
+        this.$axios
+          .post('/store/'+id, {
+            phone: phone,
+          })
+          .then(successResponse => {
+            if (successResponse.data.code === 200) {
+              alert(successResponse.data.message);
+              var data = successResponse.data.data
+              this.reload()
+              this.$router.push({path: '/businessList', query: {businessList: data}});
+            }else {
+              alert(successResponse.data.message);
+            }
+          })
+          .catch(failResponse => {
+
+          })
+      }
+    },
 
     mounted: function () {
       this.businessInfo = this.$route.query.businessList
     },
-  }}
+  }
 </script>
 
 <style scoped>

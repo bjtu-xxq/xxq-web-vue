@@ -10,12 +10,12 @@
                 <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="0" class="demo-ruleForm">
                     <div class="myInput username2">
                         <el-form-item prop="tel">
-                            <el-input class="search1 search2 search3" prefix-icon="el-icon-user" v-model="ruleForm.tel" placeholder="请输入手机号" clearable="true"></el-input>
+                            <el-input class="search1 search2 search3" prefix-icon="el-icon-user" v-model="ruleForm.username" placeholder="请输入手机号" clearable="true"></el-input>
                         </el-form-item>
                     </div>
                     <div class="myInput password">
-                        <el-form-item prop="pass">
-                            <el-input class="search1 search2 search3" prefix-icon="el-icon-magic-stick" placeholder="请输入密码" v-model="ruleForm.pass" show-password></el-input>
+                        <el-form-item prop="password">
+                            <el-input class="search1 search2 search3" prefix-icon="el-icon-magic-stick" placeholder="请输入密码" v-model="ruleForm.password" show-password></el-input>
                         </el-form-item>
                     </div>
                     <div class="myInput password">
@@ -47,8 +47,8 @@ export default {
     let checkTel = (rule, value, callback) => {
       if (value === '') {
         callback(new Error(' 手机号不能为空'))
-      } else if (!this.checkMobile(value)) {
-        callback(new Error('手机号有误 '))
+      // } else if (!this.checkMobile(value)) {
+      //   callback(new Error('手机号有误 '))
       } else {
         callback()
       }
@@ -68,7 +68,7 @@ export default {
     let validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('不能为空 '))
-      } else if (value !== this.ruleForm.pass) {
+      } else if (value !== this.ruleForm.password) {
         callback(new Error(' 两次密码不一致'))
       } else {
         callback()
@@ -76,12 +76,12 @@ export default {
     }
     return {
       ruleForm: {
-        pass: '',
-        checkPass: '',
-        tel: ''
+        username: '',
+        password: '',
+        checkPass: ''
       },
       rules: {
-        pass: [{
+        password: [{
           validator: validatePass1,
           trigger: 'change'
         }],
@@ -98,40 +98,47 @@ export default {
   },
   methods: {
     // 验证手机号
-    checkMobile (str) {
-      let re = /^1\d{10}$/
-      if (re.test(str)) {
-        return true
-      } else {
-        return false
-      }
-    },
+    // checkMobile (str) {
+    //   let re = /^1\d{10}$/
+    //   if (re.test(str)) {
+    //     return true
+    //   } else {
+    //     return false
+    //   }
+    // },
     // <!--提交注册-->
     submitForm (formName) {
 
-            if (this.ruleForm.checkPass==this.ruleForm.pass&&this.checkMobile(this.ruleForm.tel)) { // 显示登录结果
-              console.log('注册成功')
-              this.$message({
-                showClose: true,
-                message: '注册成功！',
-                type: 'success',
-                center: true
-              })
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          axios.post('/api/register',
+            {
+              username:this.ruleForm.username,
+              password:this.ruleForm.password
+            },
+          ).then(response => { // 用户名和密码将转为json传到后台接口
+            console.log(response)
+            let res = response.data// 用res承接返回后台的json文件
+            console.log(this.ruleForm)
 
+            // eslint-disable-next-line eqeqeq
+            if (res.status == 'success') { // 显示登录结果
+               console.log('注册成功')
+              this.$message({showClose: true, message: "注册成功", type: 'success', center: true})
               this.$router.push({
-                path: '/login'
-              })
+                path: '/login'})
               // eslint-disable-next-line eqeqeq
+            } else if (res.status == 'error') { // 显示登录结果
+              this.$message({showClose: true, message: res.msg, type: 'error', center: true})
             }
-            else{
-              console.log('注册失败')
-              this.$message({
-                showClose: true,
-                message: '注册失败！请稍后重试！',
-                type: 'error',
-                center: true
-              })
-            }
+            }).catch(err =>{
+
+          })}
+        else {
+          console.log('抱歉！注册失败！请稍后重试！')
+          return false
+        }
+      })
     },
     toLog () {
       this.$router.push({

@@ -26,9 +26,7 @@
 <!--          <el-input v-model="input4" placeholder="请输入密码" show-password></el-input>-->
           <el-input v-model="input5" type="text" placeholder="邮箱" show-word-limit></el-input>
           <el-input v-model="input6" type="text" placeholder="手机号" maxlength="10" show-word-limit></el-input>
-          <el-input v-model="input7" placeholder="年龄">
-
-          </el-input>
+          <el-input v-model="input7" placeholder="年龄"></el-input>
           <el-input v-model="input8" type="text" placeholder="国家" maxlength="20" show-word-limit></el-input>
           <el-input v-model="input9" type="text" placeholder="详细地址" maxlength="20" show-word-limit></el-input>
           <el-button-group style="float: right; padding: 3px 0" type="text">
@@ -46,6 +44,8 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
+
 export default {
   name: 'PersonalCenter',
   data() {
@@ -74,16 +74,30 @@ export default {
       console.log(index, row)
     },
     messsave(){
-      console.log('登录成功')
-      this.$message({
-        showClose: true,
-        message: '修改成功！',
-        type: 'success',
-        center: true
+      axios.post('/login', {}).then(response =>{
+        let res=response.data
+        if(res.status=='1'){
+          console.log('登录成功')
+          this.$message({
+            showClose: true,
+            message: '修改成功！',
+            type: 'success',
+            center: true
+          })
+          this.$router.push({
+            path: '/home'
+          })
+        }
+        else{
+          this.$message({
+            showClose: false,
+            message: '修改失败！',
+            type: 'fail',
+            center: true
+          })
+        }
       })
-      this.$router.push({
-        path: '/home'
-      })
+
     }
   },
 }

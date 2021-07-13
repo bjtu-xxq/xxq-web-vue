@@ -76,7 +76,7 @@
 
               <div>
                 <el-dialog title="申请详情" :visible.sync="businessInfoDialog">
-                  <el-card>
+            <el-card>
                     <div>
                       <el-form :label-position="labelPosition" label-width="80px" :model="businessInfo">
                         <el-form-item label="用户昵称">
@@ -162,6 +162,7 @@
         console.log(index, row);
       },
     }
+
   }
 </script>
 
