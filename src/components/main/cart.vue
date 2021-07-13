@@ -23,16 +23,15 @@
                     <el-col :span="3" class="title">小计</el-col>
                     <el-col :span="3" class="title">操作</el-col>
                 </el-row>
-
                 <div v-for="(book, index) in cart" :key="index">
                     <el-row type="flex" align="middle">
                         <el-col :span="3" class="bookRow">
-                            <img class="bookImg" :src="'img/' + book.book_Img">
+                            <img class="bookImg" :src="book.imageUrl">
                         </el-col>
-                        <el-col :span="9" class="bookRow">{{ book.book_Name }}</el-col>
-                        <el-col :span="3" class="bookRow">{{ book.unit_Price }}</el-col>
-                        <el-col :span="3" class="bookRow">{{ book.count }}</el-col>
-                        <el-col :span="3" class="bookRow">{{ book.unit_Price * book.count }}</el-col>
+                        <el-col :span="9" class="bookRow">{{ book.bookName }}</el-col>
+                        <el-col :span="3" class="bookRow">{{ book.price }}</el-col>
+                        <el-col :span="3" class="bookRow">{{ book.orderMount }}</el-col>
+                        <el-col :span="3" class="bookRow">{{ book.Price * book.orderMount }}</el-col>
                         <el-col :span="3" class="bookRow">
                             <el-button type="danger" icon="el-icon-delete" @click="cartDelete(book)" circle></el-button>
                         </el-col>
@@ -106,7 +105,7 @@
             var totalPrice = 0;
 
             axios.get('/api/order/user/list/').then(res => {
-                this.cart = res.data; //获取数据
+                this.cart = res.data.result.list; //获取数据
                 console.log("success");
                 console.log(this.cart);
                 for (let i = 0; i < this.cart.length; i++) {

@@ -88,13 +88,14 @@
         },
         created() {
           axios.get('/api/category/list').then(res =>{
-            this.navItems=res.data.result;
+            this.navItems=res.data.result.list;
             console.log(this.navItems);
           })
              axios.get('/api/book/list').then(res => {
-                    this.Books[0] = res.data.result; //获取数据
+                    this.Books[0] = res.data.result.list; //获取数据
                     console.log("success");
                     console.log(this.Books[0]);
+                    console.log(res.data.result)
                 })
           this.loading = false;
                 // axios.post(address2).then(res => {

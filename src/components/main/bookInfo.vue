@@ -73,10 +73,11 @@ export default {
     addToCart (e) {
       // eslint-disable-next-line eqeqeq
       if (this.$cookies.get('status') == 'logined') {
-        axios.post('/api/order', {
+        axios.post('/api/order/', {
           userid: this.$cookies.get('user_ID'),
-          bookId: e.ID,
-          book_Img: e.imageUrl,
+          storeId: e.storeId,//书籍ID
+          bookId: e.bookId,
+          imageUrl: e.imageUrl,
           bookName: e.name,
           price: e.price,
           orderMount: this.num
@@ -84,11 +85,12 @@ export default {
           console.log('success')
           console.log({
             userid: this.$cookies.get('user_ID'),
-            bookID: e.ID,
-            book_Img: e.imageUrl,
+            storeId: e.storeId,//书籍ID
+            bookId: e.bookId,
+            imageUrl: e.imageUrl,
             bookName: e.name,
             price: e.price,
-            count: this.num
+            orderMount: this.num
           })
           this.$message({
             type: 'success',
