@@ -101,16 +101,14 @@
             }
         },
         created() {
-            var address = "userCart.php";
             var user_ID = this.$cookies.get('user_ID');
             var count = 0;
             var totalPrice = 0;
 
-            axios.post(address, user_ID).then(res => {
+            axios.get('/api/order/user/list/').then(res => {
                 this.cart = res.data; //获取数据
                 console.log("success");
                 console.log(this.cart);
-
                 for (let i = 0; i < this.cart.length; i++) {
                     count += parseFloat(this.cart[i].count);
                     totalPrice += parseFloat(this.cart[i].unit_Price * this.cart[i].count);
@@ -121,9 +119,7 @@
         },
         methods: {
             cartDelete(e) {
-                var address = "cartDelete.php";
-
-                axios.post(address, {
+                axios.post('/api/order/'+this.$route.orderId, {
                     user_ID: e.user_ID,
                     book_ID: e.book_ID
                 }).then(response => {
@@ -139,22 +135,22 @@
                 });
             },
             toSettle() {
-                // if (!this.cart[0]) {
-                //     this.$message({
-                //         showClose: true,
-                //         message: '购物车里还没有商品噢！',
-                //         type: 'warning',
-                //         center: true
-                //     });
-                // }
-                // else {
+                if (!this.cart[0]) {
+                    this.$message({
+                        showClose: true,
+                        message: '购物车里还没有商品噢！',
+                        type: 'warning',
+                        center: true
+                    });
+                }
+                else {
                     this.$router.push({
                         path: "/shopping/settle",
                         query: {
                             cart: this.cart
                         }
                     });
-           //     }
+              }
             }
         }
     }

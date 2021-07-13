@@ -50,7 +50,7 @@ export default {
             //
             // axios.post(address).then(res => {
 //这里是ES6的写法，get请求的地址
-                this.recBooks = [{"ID":"3002","Name":"活着","Author":"余华","Language":"1","Category":"3","Commend":"4.4","Price":"20","img":"jpg"}]
+                this.recBooks = [{"ID":"1","Name":"活着","Author":"余华","Language":"1","Category":"3","Commend":"4.4","Price":"20","img":"jpg"}]
                 console.log("success");
                 console.log(this.recBooks);
                 this.transRec();

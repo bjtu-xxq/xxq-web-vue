@@ -51,14 +51,14 @@ export default {
   data() {
     return {
       text: '',//id
-      input1: '',//用户名
-      input2: '',//昵称
+      input1: '',//用户名1
+      input2: '',//昵称1
       input3: '',//登陆密码
-      input4: '',//邮箱
-      input5: '',//手机号
-      input6: '',//年龄
-      input7: '',//国家
-      input8: '',///详细地址
+      input4: '',//邮箱1
+      input5: '',//手机号1
+      input6: '',//年龄1
+      input7: '',//国家1
+      input8: '',///详细地址1
       input9: '',//权限
       circleUrl:
         '../../../static/m.jpg',
@@ -74,9 +74,18 @@ export default {
       console.log(index, row)
     },
     messsave(){
-      axios.post('/login', {}).then(response =>{
+      axios.put('/api/user/info', {
+         userId: this.input1,
+        username: this.input2,
+         nickname:this.input3,
+        email:this.input4,
+         phone:this.input5,
+         age:this.input6,
+         country:this.input7,
+        address:this.input8,
+      }).then(response =>{
         let res=response.data
-        if(res.status=='1'){
+        if(res.status=='success'){
           console.log('登录成功')
           this.$message({
             showClose: true,
@@ -91,12 +100,12 @@ export default {
         else{
           this.$message({
             showClose: false,
-            message: '修改失败！',
+            message: res.msg,
             type: 'fail',
             center: true
           })
         }
-      })
+      }).catch(err =>{})
 
     }
   },

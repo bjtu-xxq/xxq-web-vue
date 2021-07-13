@@ -5,27 +5,27 @@
         </div>
         <div v-loading="loading" class="bookInfo">
             <el-card class="box-card leftInfo">
-                <img style="height: 310px;" :src="'img/' + this.bookInfo.img">
+                <img style="height: 310px;" :src="this.bookInfo.imageUrl">
                 <div style="display: flex; margin-top: 20px; align-items: center;">
                     <div style="color: #606266;">推荐程度：</div>
-                    <el-rate style="margin-top: 4px;" v-model="bookInfo.Commend" :colors="colors" disabled></el-rate>
+                    <el-rate style="margin-top: 4px;" v-model="bookInfo.commend" :colors="colors" disabled></el-rate>
                 </div>
             </el-card>
             <div class="rightInfo" style="position: relative;">
-                <div class="bookName">{{ bookInfo.Name }}</div>
-                <div class="authorName">{{ bookInfo.Author }} / {{ bookInfo.Publish_name }}</div>
+                <div class="bookName">{{ bookInfo.name }}</div>
+                <div class="authorName">{{ bookInfo.author }} / {{ bookInfo.press}}</div>
                 <div style="display: flex; margin-top: 50px; align-items: center;">
                     <div style="color: #606266;">售价：</div>
-                    <div class="bookPrice">¥ {{ bookInfo.Price }}</div>
+                    <div class="bookPrice">¥ {{ bookInfo.price }}</div>
                 </div>
                 <div style="display: flex; margin-top: 50px; align-items: flex-end;">
                     <div style="color: #606266;">库存数量：</div>
-                    <div>{{ bookInfo.Book_Num }}</div>
+                    <div>{{ bookInfo.storeMount }}</div>
                 </div>
                 <div style="position: absolute; bottom: 0;">
                     <div style="display: flex; align-items: center;">
                         <div style="color: #606266;">数量：</div>
-                        <el-input-number v-model="num" @change="handleChange" :min="1" :max="bookInfo.Book_Num"></el-input-number>
+                        <el-input-number v-model="num" @change="handleChange" :min="1" :max="bookInfo.storeMount"></el-input-number>
                     </div>
                     <div style="display: flex; margin-top: 40px;">
                         <el-button class="buyButton1" @click="addToCart(bookInfo)">加入购物车</el-button>
@@ -46,13 +46,9 @@ export default {
   data () {
     return {
       loading: true,
-      bookInfo: [{"ID":"3002","Name":"活着","Author":"余华","Language":"1","Category":"3","Commend":"4.4","Price":"20","img":"jpg"}],
-      num: 1,
+      bookInfo: [],
       cart: [[]],
-      list:[
-        {id:'1',name:'李白',content:'抽刀断水水更流'},
-        {id:'2',name:'孟浩然',content:'千里江陵一日还'},
-      ]
+      num: 1
     }
   },
   created () {
@@ -60,16 +56,11 @@ export default {
   },
   methods: {
     getInfo () {
-      var address = 'bookInfo'
-
-      // axios.post(address, {
-      //   ID: this.$route.query.ID
-      // }).then(res => {
-        this.bookInfo = [{"ID":"3002","Name":"活着","Author":"余华","Category":"3","Commend":"4.4","Price":"20","img":"jpg"}]
-
-      console.log('success')
+      axios.get('/api/book/'+this.$route.query.ID).then(res => {
+        this.bookInfo =res.data.result
+        console.log('success')
         console.log(this.bookInfo)
-    //  })
+      })
       this.loading = false
     },
     handleChange (value) {
@@ -78,25 +69,32 @@ export default {
     goBack () {
       this.$router.go(-1)
     },
-    addToCart (e) {
-      var address = 'addToCart';
 
+    addToCart (e) {
       // eslint-disable-next-line eqeqeq
       if (this.$cookies.get('status') == 'logined') {
-        // axios.post(address, {
-        //   user_ID: this.$cookies.get('user_ID'),
-        //   book_ID: e.ID,
-        //   book_Img: e.img,
-        //   book_Name: e.Name,
-        //   unit_Price: e.Price,
-        //   count: this.num
-        // }).then(res => {
-        //   console.log('success')
+        axios.post('/api/order', {
+          userid: this.$cookies.get('user_ID'),
+          bookId: e.ID,
+          book_Img: e.imageUrl,
+          bookName: e.name,
+          price: e.price,
+          orderMount: this.num
+        }).then(res => {
+          console.log('success')
+          console.log({
+            userid: this.$cookies.get('user_ID'),
+            bookID: e.ID,
+            book_Img: e.imageUrl,
+            bookName: e.name,
+            price: e.price,
+            count: this.num
+          })
           this.$message({
             type: 'success',
             message: '成功加入购物车！'
           })
-      //  })
+        })
       } else {
         this.$confirm('您尚未登录！', 'smallFrog', {
           confirmButtonText: '去登陆',

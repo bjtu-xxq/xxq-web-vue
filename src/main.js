@@ -12,7 +12,8 @@ import  qs from 'qs';
 Vue.prototype.$qs=qs
 Vue.use(VueCookies)
 Vue.use(ElementUI)
-Vue.use(axios)
+// Vue.prototype.axios = axios
+Vue.prototype.$http = axios;
 Vue.config.productionTip = false
 axios.defaults.withCredentials=true;
 // 设置反向代理，前端请求默认发送到 http://localhost:8080/api

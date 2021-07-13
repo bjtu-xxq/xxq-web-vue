@@ -19,10 +19,10 @@
         </el-header> -->
 
         <el-container>
-            <el-aside width="250px">
+            <el-aside width="300px">
                 <el-card class="leftNav">
                     <img src="../../../static/cateNav.png" class="leftImg" />
-                    <div class="navItem" :class="index == showCategoryIndex ? 'cur' : ''" v-for="(item, index) in navItems" :key="index" @click="showCategory(index)">{{ item }}</div>
+                    <div class="navItem" :class="index == showCategoryIndex ? 'cur' : ''" v-for="(item, index) in navItems" :key="index" @click="showCategory(index)">{{item.name}}</div>
                     <div class="navItem" @click="toTop()"><i class="el-icon-arrow-up" style="font-size: 23px;"></i></div>
                 </el-card>
             </el-aside>
@@ -31,23 +31,23 @@
                 <el-row>
                     <el-card class="row" v-for="(book, index) in Books[showCategoryIndex].slice((currentPage-1)*pagesize,currentPage*pagesize)" :key="index" :body-style="{ padding: '0px' }">
 <!--                      //分页-->
-                        <img class="img" @click="toInfo(book)" src=" static/left2.jpg">
+                        <img class="img" @click="toInfo(book)" :src="book.imageUrl">
                         <el-link class="name" @click="toInfo(book)" :underline="false">
                             <i class="el-icon-reading readIcon"></i>
-                            {{ book.Name }}
+                            {{ book.name }}
                         </el-link>
-                        <div class="author">{{ book.Author }}</div>
+                        <div class="author">{{ book.author }}</div>
 
                         <div style="position: absolute; bottom: 0;">
                             <el-row type="flex" align="middle">
-                                <el-col :span="12" class="price">¥ {{ book.Price }}</el-col>
+                                <el-col :span="12" class="price">¥{{ book.price }}</el-col>
                                 <el-col :span="12">
                                     <button class="shop" @click="addToCart(book)">
                                         <i class="el-icon-shopping-bag-1 icon"></i>
                                       </button>
                                 </el-col>
                             </el-row>
-                            <el-rate class="rate" v-model="book.Commend" :colors="colors" disabled></el-rate>
+                            <el-rate class="rate" v-model="book.commend" :colors="colors" disabled></el-rate>
                         </div>
                     </el-card>
                 </el-row>
@@ -74,12 +74,12 @@
                 bookPath: 1,
                 searchText: "", //搜索关键字
                 showCategoryIndex: 0,
-                navItems: ["全部书籍", "1类", "2类", "3类"],
-                Books: [
+                navItems: [],
+              Books: [
                  []
                 ],
                 currentPage: 1,
-                pagesize: 20
+                pagesize: 40
             };
         },
         //第二步：mounted中的方法代表dom已经加载完毕
@@ -87,43 +87,36 @@
             window.addEventListener('scroll', this.handleScroll);
         },
         created() {
-
-          this.Books[0]=[{"ID":"3002","Name":"芜湖起飞","Author":"金牌厨师","Category":"3","Commend":"4.4","Price":"20","img":"jpg"},{"ID":"3011","Name":"1","Author":"2","Category":"3","Commend":"4","Price":"22","img":"sjpg"},{"ID":"3020","Name":"3","Author":"3","Category":"3","Commend":"4","Price":"64","img":"jpg"},{"ID":"3100","Name":"4","Author":"4","Category":"3","Commend":"3.8","Price":"28","img":"jpg"}],
-            this.Books[1]=[{"ID":"3011","Name":"1","Author":"2","Category":"3","Commend":"4","Price":"22","img":"sjpg"}],
-            this.Books[2]=[{"ID":"3020","Name":"3","Author":"3","Category":"3","Commend":"4","Price":"64","img":"jpg"}],
-            this.Books[3]=[{"ID":"3100","Name":"4","Author":"4","Category":"3","Commend":"3.8","Price":"28","img":"jpg"}]
-
+          axios.get('/api/category/list').then(res =>{
+            this.navItems=res.data.result;
+            console.log(this.navItems);
+          })
+             axios.get('/api/book/list').then(res => {
+                    this.Books[0] = res.data.result; //获取数据
+                    console.log("success");
+                    console.log(this.Books[0]);
+                })
           this.loading = false;
-            // var address1 = "allBooks";
-            // var address2 = "1";
-            // var address3 = "2";
-            // var address4 = "3";
-            //
-            //  axios.post(address1).then(res => {
-            //         this.Books[0] = res.data; //获取数据
-            //         console.log("success");
-            //         console.log(this.allBooks);
-            //     }),
-            //     axios.post(address2).then(res => {
-            //         this.Books[1] = res.data; //获取数据
-            //         console.log("success");
-            //         console.log(this.1);
-            //     }),
-            //     axios.post(address3).then(res => {
-            //         this.Books[2] = res.data; //获取数据
-            //         console.log("success");
-            //         console.log(this.2);
-            //     }),
-            //     axios.post(address4).then(res => {
-            //         this.Books[3] = res.data; //获取数据
-            //         console.log("success");
-            //         console.log(this.3);
-            //         this.loading = false;
-            //     })
+                // axios.post(address2).then(res => {
+                //     this.Books[1] = res.data; //获取数据
+                //     console.log("success");
+                //
+                // }),
+                // axios.post(address3).then(res => {
+                //     this.Books[2] = res.data; //获取数据
+                //     console.log("success");
+                //   //  console.log(this.2);
+                // }),
+                // axios.post(address4).then(res => {
+                //     this.Books[3] = res.data; //获取数据
+                //     console.log("success");
+                //   //  console.log(this.3);
+                //    this.loading = false;
+                // })
         },
         methods: {
             handleCurrentChange: function(currentPage) {
-                this.currentPage = currentPage
+              this.currentPage = currentPage
             },
             //第三步：用于存放页面函数
             handleScroll() {
@@ -133,14 +126,15 @@
                 document.body.scrollTop = 0;
                 document.documentElement.scrollTop = 0;
             },
-            toInfo(e) {
-                this.$router.push({
-                    path: "/bookInfo",
-                    query: {
-                        ID: e.ID
-                    }
-                });
-            },
+
+          toInfo(e) {
+            this.$router.push({
+              path: "/bookInfo",
+              query: {
+                ID: e.bookId
+              }
+            });
+          },
             showCategory(index) {
                 this.showCategoryIndex = index;
             },
@@ -155,10 +149,10 @@
 
                         axios.post(address, {
                             user_ID: this.$cookies.get('user_ID'),
-                            book_ID: e.ID,
-                            book_Img: e.img,
-                            book_Name: e.Name,
-                            unit_Price: e.Price,
+                            book_ID: e.bookId,
+                            book_Img: e.imageUrl,
+                            book_Name: e.name,
+                            unit_Price: e.price,
                             count: 1
                         }).then(res => {
                             console.log("success");
