@@ -118,11 +118,9 @@
         },
         methods: {
             cartDelete(e) {
-                axios.post('/api/order/'+this.$route.orderId, {
-                    user_ID: e.user_ID,
-                    book_ID: e.book_ID
-                }).then(response => {
-                    console.log('删除成功');
+                axios.delete('/api/order/'+e.orderId).then(response => {
+                    console.log('删除成功')
+                    console.log(response)
                     this.$message({
                         showClose: true,
                         message: '删除成功！',
@@ -130,7 +128,6 @@
                         center: true
                     });
                     this.reload();
-
                 });
             },
             toSettle() {
