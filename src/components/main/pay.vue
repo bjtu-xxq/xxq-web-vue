@@ -78,18 +78,20 @@ export default {
       })
     },
     tosuccess(){
-      axios.put('/api/order/pay/'+this.$route.query.cart.orderId,
+      console.log(this.$route.query.cart)
+      axios.put('/api/order/pay/'+this.$route.query.cart[0].orderId,
         {paymentType:'1'}).then(res =>
       {
         console.log(res.data)
         if(res.data.status='success')
         {
-          console.log("成功")
+          console.log(res)
+          this.$router.push({
+            path: '/shopping/successpay'
+          })
         }
       })
-      this.$router.push({
-        path: '/shopping/successpay'
-      })
+
     },
     // 编辑操作
     handleEdit () {

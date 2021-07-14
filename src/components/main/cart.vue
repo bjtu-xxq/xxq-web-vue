@@ -103,8 +103,8 @@
             var user_ID = this.$cookies.get('user_ID');
             var count = 0;
             var totalPrice = 0;
-
-            axios.get('/api/order/user/list/',{status:'2'}).then(res => {
+            var status=0;
+            axios.get('/api/order/user/list/' + "?status=" +status).then(res => {
                 this.cart = res.data.result.list; //获取数据
                 console.log(res.data);
                 console.log(this.cart);

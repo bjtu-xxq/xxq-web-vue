@@ -373,7 +373,6 @@ export default {
           })
       }
     },
-
     orderManage() {
       axios.get('/api/order/user/list').then(res =>{
         if(res.data.status=='success'){
