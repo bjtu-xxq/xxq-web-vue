@@ -117,7 +117,7 @@
               this.currentPage = currentPage
               axios.get('/api/book/list', this.currentPage).then(res => {
                 this.Books[this.showCategoryIndex] = res.data.result.list
-                //this.reload();
+                this.reload();
               })
             },
             //第三步：用于存放页面函数
@@ -129,13 +129,17 @@
                 document.documentElement.scrollTop = 0;
             },
           toSearch(){
+              if(this.searchText==''){
+                this.$message({showClose: true, message: '查询不能为空！', type: 'error', center: true})
+              }else{
             axios.get('/api/book/search/'+this.searchText+'/list/').then(res =>{
               console.log(res.data)
             this.Books[0]=res.data.result.list;
               let data=res.data.result;
               this.MAXlength=data.total/50;
+              this.$message({showClose: true, message: '查询成功！', type: 'success', center: true})
               this.reload();
-            })
+            })}
           },
           toInfo(e) {
             this.$router.push({path: "/bookInfo", query: {ID: e.bookId}
