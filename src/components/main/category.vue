@@ -222,8 +222,8 @@
     /* main里的样式 */
     .leftNav {
         top: 50%;
-        width: 150px;
-        height: 410px;
+        width: 160px;
+        height: 600px;
         margin-top: -180px;
         margin-left: 60px;
         position: fixed;
@@ -242,7 +242,7 @@
 
     .leftNav .navItem {
         text-align: center;
-        height: 60px;
+        height: 30px;
         cursor: pointer;
         color: #ffffff;
         cursor: pointer;
