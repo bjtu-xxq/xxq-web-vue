@@ -6,50 +6,28 @@
         <el-tab-pane label="未支付" name="first">
           <div>
             <el-table :data="unPayList" style="width: 100%" height="100%">
-              <el-table-column prop="picture" label="商品" width="120">
-                <template slot-scope="scope">
-                  <img :src="scope.row.book.imageUrl" class="cover">
-                </template>
+              <el-table-column label="商品" width="120">
+                <template slot-scope="scope"><img :src="scope.row.imageUrl" class="cover"></template>
               </el-table-column>
-              <el-table-column prop="name" show-overflow-tooltip>
-                <template slot-scope="scope">{{ scope.row.book.bookName }}</template>
+              <el-table-column prop="bookName" show-overflow-tooltip>
               </el-table-column>
-
-              <el-table-column prop="storeName" label="店铺名" show-overflow-tooltip>
-                <template slot-scope="scope">{{ scope.row.book.storeId }}</template>
+              <el-table-column prop="bookName" label="店铺名" show-overflow-tooltip>
               </el-table-column>
-
               <el-table-column prop="price" label="单价" width="100">
-                <template slot-scope="scope">￥{{scope.row.book.price }}</template>
-<!--                //scope.row.book.price-->
               </el-table-column>
+              <el-table-column prop="orderMount" label="数量" show-overflow-tooltip>
 
-              <el-table-column prop="number" label="数量" show-overflow-tooltip>
-                <template slot-scope="scope">
-<!--                  scope.row.order.number-->
-                  <el-input-number v-model="scope.row.book.orderMount" size="small" :min="1" :disabled="true">{{scope.row.book.orderMount }}</el-input-number>
-                </template>
               </el-table-column>
-
-              <el-table-column prop="totalPrice" label="金额" width="120"><template slot-scope="scope">￥{{ scope.row.book.totalPrice }}</template>
-              </el-table-column>
-
-              <el-table-column
-                prop="operation">
+              <el-table-column label="金额" width="120"><template slot-scope="scope">￥{{ scope.row.orderMount * scope.row.price }}</template></el-table-column>
+              <el-table-column prop="operation">
                 <template slot-scope="scope">
                   <el-button size="small" type="success" plain @click="continuePay(scope.row.order.id, scope.row.order.totalPrice)">继续支付</el-button>
                   <el-button size="small" type="danger" plain @click="deleteOrder(scope.row.order.id)">取消订单</el-button>
                 </template>
               </el-table-column>
             </el-table>
-
             <div>
-              <el-dialog
-                title="付款提示"
-                :visible.sync="payDialog"
-                width="20%">
-                <span class="text">￥{{this.totalPrice}}</span>
-
+              <el-dialog title="付款提示" :visible.sync="payDialog" width="20%"><span class="text">￥{{this.totalPrice}}</span>
                 <span slot="footer" class="dialog-footer">
                     <el-button size="small" type="success" plain @click="pay('sure')">确认支付</el-button>
                     <el-button size="small" type="danger" plain @click="pay('giveUp')">放弃支付</el-button>
@@ -57,118 +35,62 @@
               </el-dialog>
             </div>
           </div>
-
         </el-tab-pane>
 
-        <el-tab-pane label="已支付" name="second">
-          <div>
+        <el-tab-pane label="已支付" name="second" v-if="payList">
+
             <el-table :data="payList" style="width: 100%" height="100%">
-              <el-table-column prop="picture" label="商品"
-                width="120">
-                <template slot-scope="scope">
-                  <img :src="payList.imageUrl" class="cover">
-                </template>
-              </el-table-column>
-
-              <el-table-column
-                prop="name"
-                show-overflow-tooltip>
-                <template slot-scope="scope">{{scope.row.book.name }}</template>
-              </el-table-column>
-
-              <el-table-column prop="storeName" label="店铺名" show-overflow-tooltip>
-                <template slot-scope="scope">{{ scope.row.book.name }}</template>
-<!--                scope.row.store.name-->
-              </el-table-column>
-
-              <el-table-column prop="price" label="单价" width="100">
-                <template slot-scope="scope">￥{{ scope.row.book.price }}</template>
-              </el-table-column>
-
-              <el-table-column prop="number" label="数量" show-overflow-tooltip>
-                <template slot-scope="scope">
-                  <el-input-number v-model="scope.row.order.number" size="small" :min="1" :disabled="true">{{scope.row.order.number }}</el-input-number>
-                </template>
-              </el-table-column>
-
-              <el-table-column prop="totalPrice" label="金额" width="120">
-                <template slot-scope="scope">￥{{ scope.row.order.totalPrice }}</template>
+              <el-table-column  label="商品" width="120"><template slot-scope="scope"><img :src="scope.row.imageUrl" class="cover"></template></el-table-column>
+              <el-table-column prop="bookName" label="商品名" ></el-table-column>
+              <el-table-column prop="price" label="单价" width="100"></el-table-column>
+              <el-table-column prop="orderMount" label="数量" ></el-table-column>
+              <el-table-column label="金额" width="120"><template slot-scope="scope">{{ scope.row.price * scope.row.orderMount}}</template>
               </el-table-column>
             </el-table>
-          </div>
+
         </el-tab-pane>
 
         <el-tab-pane label="已发货" name="third">
           <div>
             <el-table :data="sendList" style="width: 100%" height="100%">
-              <el-table-column prop="picture" label="商品" width="120">
-                <template slot-scope="scope">
-                  <img :src="scope.row.book.picPath" class="cover">
-                </template>
+              <el-table-column label="商品" width="120"><template slot-scope="scope"><img :src="scope.row.imageUrl" class="cover"></template></el-table-column>
+              <el-table-column prop="bookName" width="400"></el-table-column>
+              <el-table-column prop="storeName" label="店铺名" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="price" label="单价" width="120"></el-table-column>
+              <el-table-column  label="数量" show-overflow-tooltip>
+                <template slot-scope="scope"><el-input-number v-model="scope.row.orderMount" size="small" :min="1" :disabled="true">{{ scope.row.orderMount }}</el-input-number></template>
               </el-table-column>
-
-              <el-table-column prop="name" width="400">
-                <template slot-scope="scope">{{ scope.row.book.name }}</template>
-<!--                scope.row.book.name-->
-              </el-table-column>
-
-              <el-table-column prop="storeName" label="店铺名" show-overflow-tooltip>
-                <template slot-scope="scope">{{ scope.row.store.name }}</template>
-              </el-table-column>
-
-              <el-table-column prop="price" label="单价" width="120">
-                <template slot-scope="scope">￥{{ scope.row.book.price }}</template>
-              </el-table-column>
-
-              <el-table-column prop="number" label="数量" show-overflow-tooltip>
-                <template slot-scope="scope">
-                  <el-input-number v-model="order.number" size="small" :min="1" :disabled="true">{{ order.number }}</el-input-number>
-                </template>
-              </el-table-column>
-
-              <el-table-column prop="totalPrice" label="金额" width="120">
-                <template slot-scope="scope">￥{{ order.totalPrice }}</template>
-              </el-table-column>
-
+              <el-table-column label="金额" width="120">
+                <template slot-scope="scope">￥{{ scope.row.orderMount * scope.row.orderMount}}
+              </template></el-table-column>
               <el-table-column prop="operation">
-                <template slot-scope="scope">
-                  <el-button size="small" type="success" plain @click="sureGet(order.id)">确认收货</el-button>
-                </template>
+                <template slot-scope="scope"><el-button size="small" type="success" plain @click="sureGet(scope.row.userId)">确认收货</el-button></template>
               </el-table-column>
             </el-table>
           </div>
         </el-tab-pane>
-
         <el-tab-pane label="已收货" name="fourth">
           <div>
             <el-table :data="getList" style="width: 100%" height="100%">
-              <el-table-column prop="picture" label="商品" width="120">
-                <template slot-scope="scope">
-                  <img :src="getList.picPath" class="cover">
-                </template>
+              <el-table-column  label="商品" width="120">
+                <template slot-scope="scope"><img :src="scope.row.imageUrl" class="cover"></template>
               </el-table-column>
 
               <el-table-column prop="name" width="400">
-                <template slot-scope="scope">{{getList.name }}</template>
-<!--                scope.row.book.name-->
+
               </el-table-column>
 
               <el-table-column prop="storeName" label="店铺名" show-overflow-tooltip>
-                <template slot-scope="scope">{{ store.name }}</template>
               </el-table-column>
 
               <el-table-column prop="price" label="单价" width="120">
-                <template slot-scope="scope">￥{{ getList.price }}</template>
               </el-table-column>
 
-              <el-table-column prop="number" label="数量" show-overflow-tooltip>
-                <template slot-scope="scope">
-                  <el-input-number v-model="order.number" size="small" :min="1" :disabled="true">{{order.number }}</el-input-number>
-                </template>
+              <el-table-column prop="orderMount" label="数量" show-overflow-tooltip>
               </el-table-column>
 
               <el-table-column prop="totalPrice" label="金额" width="120">
-                <template slot-scope="scope">￥{{ order.totalPrice }}</template>
+                <template slot-scope="scope">￥{{ scope.row.rderMount *scope.row.price }}</template>
               </el-table-column>
 
               <el-table-column
@@ -183,9 +105,7 @@
 
                       <el-form-item label="用户评分">
                         <div class="block" style="margin-top: 10px">
-                          <el-rate
-                            v-model="bookScore.score"
-                            :colors="colors">
+                          <el-rate v-model="bookScore.score" :colors="colors">
                           </el-rate>
                         </div>
                       </el-form-item>
@@ -254,131 +174,61 @@ export default {
         picPath: '3',
       },
 
-      store: {
-        id: '4',
-        name: '4',
-        phone: '4',
-        address: '4',
-        introduction: '4',
-      },
+      store: {},
 
-      unPayList: [
-        {
-          picPath: '5',
-          name: '5',
-          price: '5',
-          storeName: '5',
-          number: '5',
-          totalPrice: '5',
-          state: '5',
-        }
-      ],
+      unPayList: [{}],
 
-      payList: [
-        {
-          picPath: '6',
-          name: '6',
-          price: '6',
-          storeName: '6',
-          number: '6',
-          totalPrice: '6',
-          state: '6',
-        }
-      ],
+      payList: [{}],
 
-      sendList: [
-        {
-          picPath: '7',
-          name: '7',
-          price: '7',
-          storeName: '7',
-          number: '7',
-          totalPrice: '7',
-          state: '7',
-        }
-      ],
+      sendList: [{}],
 
-      getList: [
-        {
-          picPath: '8',
-          name: '8',
-          price: '8',
-          storeName: '8',
-          number: '8',
-          totalPrice: '8',
-          state: '8',
-        }
-      ],
+      getList: [{}],
 
-      bookScore: {
-        name: '9',
-        score: '9',
-      },
-    }
+      bookScore: {}}
   },
-
+  creat(){
+    this.orderManage();
+  },
   methods: {
-    creat(){
-      this.orderManage();
-    },
+
     handleClick(tab, event) {
       if(this.activeName === 'first') {
         this.orderManage();
-      }else if(this.activeName === 'second') {
-        this.$axios  // 获取已支付，未发货的订单
-          .post('order/useryizhifu', {
-            userId: this.$session.get("key"), // 当前用户
-          })
-          .then(successResponse => {
-            if (successResponse.data.code === 200) {
-              var data = successResponse.data.data;
+      }else if(this.activeName === 'second') {// 获取已支付，未发货的订单
+        axios.get('/api/order/user/list'+ "?status=1").then(successResponse => {
+              var data = successResponse.data.result.list;
               this.payList = data;
-            }else {
-              alert(successResponse.data.message);
-            }
+              console.log(this.payList)
+          console.log(successResponse.data)
           })
           .catch(failResponse => {
             alert("失败！");
           })
       }else if(this.activeName === 'third') {
-        this.$axios  // 获取已发货的订单
-          .post('order/useryifahuo', {
-            userId: this.$session.get("key"), // 当前用户
-          })
+        // 获取已发货的订单
+        axios.post('/api/order/user/list'+ "?status=2")
           .then(successResponse => {
-            if (successResponse.data.code === 200) {
-              var data = successResponse.data.data;
+            var data = successResponse.data.result.list;
               this.sendList = data;
-            }else {
-              alert(successResponse.data.message);
-            }
-          })
-          .catch(failResponse => {
-            alert("失败！");
+          }).catch(failResponse => {
           })
       }else {// 获取已收货的订单
-        axios.post('/order/useryiqianshou', {
-            userId: this.$session.get("key"), // 当前用户
-          })
+        axios.post('/api/order/user/list'+ "?status=3")
           .then(successResponse => {
-            if (successResponse.data.code === 200) {
-              var data = successResponse.data.data;
+            var data = successResponse.data.result.list;
               this.getList = data;
-            }else {
-              alert(successResponse.data.message);
-            }
-          })
-          .catch(failResponse => {
-            alert("失败！");
+          }).catch(failResponse => {
           })
       }
     },
     orderManage() {
-      axios.get('/api/order/user/list').then(res =>{
+      var status=0
+      axios.get('/api/order/user/list'+ "?status="+status).then(res =>{
         if(res.data.status=='success'){
           console.log(res.data.result.list)
-          this.unPayList = res.data.result.list;
-           this.reload();
+          let data = res.data.result.list
+          this.reload();
+          this.$router.push({path: '/order', query: {unPayList: data}});
         }})
     },
 
@@ -564,10 +414,10 @@ export default {
         })
     }
   },
-  //
-  // mounted() {
-  //   this.unPayList = this.$route.query.unPayList;
-  // }
+
+  mounted() {
+    this.unPayList = this.$route.query.unPayList;
+  }
 }
 </script>
 
