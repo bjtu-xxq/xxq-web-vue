@@ -81,7 +81,7 @@
                         <div class="left">
                             <div class="infoTitle">收货信息：无</div>
                         </div>
-                        <el-button class="modify1" type="info" @click="modify1()" plain>修改</el-button>
+<!--                        <el-button class="modify1" type="info" @click="modify1()" plain>修改</el-button>-->
 
                     </div>
                     <el-divider></el-divider>
@@ -124,25 +124,25 @@
             </div>
           </el-dialog>
             <!-- 收货信息编辑弹出框 -->
-            <el-dialog title="修改收货信息" :visible.sync="editVisible" width="35%">
-                <el-form label-position="left" :rules="rules" ref="userInfo" :model="receiverlist" label-width="100px">
-                  <el-select v-model="userInfo.category" style="width: 400px">
-                    <el-option
-                      v-for="item in receiverlist"
-                      :key="item.value"
-                      :label="'姓名：'+item.name+'   手机号:'+item.phone+'    地址：'+item.address"
-                      :value="'姓名：'+item.name+'   手机号:'+item.phone+'    地址：'+item.address">
+          <el-dialog title="修改收货信息" :visible.sync="editVisible" width="35%">
+            <el-form label-position="left" :rules="rules" ref="userInfo" :model="userInfo" label-width="100px">
+              <el-select v-model="userInfo" style="width: 400px">
+                <el-option
+                  v-for="item in receiverlist"
+                  :label="item"
+                  :value="item"
+                  :key="index">
+                </el-option>
+              </el-select>
+            </el-form>
 
-                    </el-option>
-                  </el-select>
-                </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="showmsg(receiverlist)" plain>修改</el-button>
+              <!--                  修改-->
+              <el-button type="danger" @click="editVisible = false" plain>取消</el-button>
+            </div>
+          </el-dialog>
 
-                <div slot="footer" class="dialog-footer">
-                    <el-button type="primary" @click="showmsg()" plain>修改</el-button>
-<!--                  修改-->
-                    <el-button type="danger" @click="editVisible = false" plain>取消</el-button>
-                </div>
-            </el-dialog>
         </div>
     </div>
 </template>
@@ -208,9 +208,9 @@ export default {
         this.editVisible1 = false;
       })
     },
-    showmsg(){
-      this.userInfo.name=this.receiverlist.name;
-      this.userInfo.phone=this.receiverlist.phone;
+    showmsg(e){
+      console.log(e);
+      console.log(this.userInfo);
       this.editVisible=false;
     },
     goBack () {
@@ -231,7 +231,6 @@ export default {
         if(res.data.status=="success"){
           console.log('success')
           this.editVisible = true
-
         }
 
     })},

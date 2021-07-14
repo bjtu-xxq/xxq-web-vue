@@ -389,8 +389,7 @@ export default {
     },
 
     personalInfoSetting() {
-      this.$axios
-        .post('/entity', {
+      axios.post('/entity', {
           id: this.$session.get("key"),
         })
         .then(successResponse => {
@@ -406,8 +405,7 @@ export default {
         })
     },
 
-    storeManage() {
-      this.$axios
+    storeManage() {axios
         .post('/store/allbooks', {
           phone: this.$session.get("key"),
         })
@@ -429,7 +427,7 @@ export default {
     },
 
     storeInfoSetting() {
-      this.$axios
+      axios
         .post('/store/info', {
           phone: this.$session.get("key"),
         })
@@ -451,8 +449,7 @@ export default {
     },
 
     assistantNoPass() {
-      this.$axios  // 获取待审核的助理列表
-        .post('/store/all_assistant_application', {
+      axios.post('/store/all_assistant_application', {
           phone: this.$session.get("key"), // 当前用户
         })
         .then(successResponse => {
@@ -480,8 +477,7 @@ export default {
 
     pay(operation) {
       if(operation === 'sure') {
-        this.$axios
-          .post('/order/pay1', {
+        axios.post('/order/pay1', {
             id: this.id,
           })
           .then(successResponse => {
@@ -507,8 +503,7 @@ export default {
     },
 
     deleteOrder(id) {
-      this.$axios
-        .post('/order/cancel', {
+      axios.post('/order/cancel', {
           id: id,
         })
         .then(successResponse => {
@@ -527,8 +522,7 @@ export default {
     },
 
     sureGet(id) {
-      this.$axios
-        .post('order/confirm', {
+      axios.post('order/confirm', {
           id: id,
         })
         .then(successResponse => {
@@ -554,8 +548,7 @@ export default {
     },
 
     scoreBook() {
-      this.$axios
-        .post('/order/score', {
+      axios.post('/order/score', {
           userId: this.$session.get("key"), // 当前用户
           bookId: this.bookId,
           score: this.bookScore.score,

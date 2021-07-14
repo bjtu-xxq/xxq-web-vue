@@ -104,9 +104,9 @@
             var count = 0;
             var totalPrice = 0;
 
-            axios.get('/api/order/user/list/').then(res => {
+            axios.get('/api/order/user/list/',{status:'2'}).then(res => {
                 this.cart = res.data.result.list; //获取数据
-                console.log("success");
+                console.log(res.data);
                 console.log(this.cart);
                 for (let i = 0; i < this.cart.length; i++) {
                     count += parseFloat(this.cart[i].orderMount);
