@@ -17,7 +17,6 @@
                 </el-col>
             </el-row>
         </el-header>
-
         <el-container>
             <el-aside width="300px">
                 <el-card class="leftNav">
@@ -34,9 +33,8 @@
 <!--                      //分页-->
                         <img class="img" @click="toInfo(book)" :src="book.imageUrl">
                         <el-link class="name" @click="toInfo(book)" :underline="false">
-                            <i class="el-icon-reading readIcon"></i>
-                            {{ book.name }}
-                        </el-link>
+                          <i class="el-icon-reading readIcon"></i>
+                          {{ book.name }}</el-link>
                         <div class="author">{{ book.author }}</div>
 
                         <div style="position: absolute; bottom: 0;">
@@ -52,7 +50,6 @@
                         </div>
                     </el-card>
                 </el-row>
-
                 <el-row class="page">
                     <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pagesize" :total="Books[showCategoryIndex].length">
                     </el-pagination>
@@ -99,22 +96,6 @@
                     console.log(res.data.result)
                 })
           this.loading = false;
-                // axios.post(address2).then(res => {
-                //     this.Books[1] = res.data; //获取数据
-                //     console.log("success");
-                //
-                // }),
-                // axios.post(address3).then(res => {
-                //     this.Books[2] = res.data; //获取数据
-                //     console.log("success");
-                //   //  console.log(this.2);
-                // }),
-                // axios.post(address4).then(res => {
-                //     this.Books[3] = res.data; //获取数据
-                //     console.log("success");
-                //   //  console.log(this.3);
-                //    this.loading = false;
-                // })
         },
         methods: {
             handleCurrentChange: function(currentPage) {
@@ -128,7 +109,13 @@
                 document.body.scrollTop = 0;
                 document.documentElement.scrollTop = 0;
             },
-
+          toSearch(){
+            axios.get('/api/book/search/'+this.searchText+'/list/').then(res =>{
+              console.log(res.data)
+            this.Books[0]=res.data.result.list;
+              this.reload();
+            })
+          },
           toInfo(e) {
             this.$router.push({path: "/bookInfo", query: {ID: e.bookId}
             });

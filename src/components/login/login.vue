@@ -99,14 +99,9 @@ export default {
           }).then(response => { // 用户名和密码将转为json传到后台接口
             let res = response.data // 用res承接返回后台的json文件(像使用数组那样)
             console.log(response)
-            if (res.status == 'success') { // 显示登录结果//res.status == '1'
+            if (res.status == 'success'&&res.result.password=="false") { // 显示登录结果//res.status == '1'
               console.log('登录成功')
-              this.$message({
-                showClose: true,
-                message: '登录成功！',
-                type: 'success',
-                center: true
-              })
+              this.$message({showClose: true, message: '登录成功！', type: 'success', center: true})
               console.log(res)
               this.$cookies.set('status', 'logined')
               this.$cookies.set('userID', res.userId)
@@ -115,13 +110,15 @@ export default {
                 path: '/home'
               })
               // eslint-disable-next-line eqeqeq
-              } else if (res.status == '0') {
-              console.log('账号或密码错误！')
-              this.$message({
-                showClose: true,
-                message: '账号或密码错误！',
-                type: 'error',
-                center: true
+              } else if (res.status == 'success'&&res.result.password=="true") {
+              console.log('登录成功')
+              this.$message({showClose: true, message: '欢迎您管理员！', type: 'success', center: true})
+              console.log(res)
+              this.$cookies.set('status', 'logined')
+              this.$cookies.set('userID', res.userId)
+              this.$cookies.set('Avatar', res.Avatar)
+              this.$router.push({
+                path: '/home1'
               })
             } else {
               console.log('登录失败')
