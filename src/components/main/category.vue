@@ -129,11 +129,7 @@
             },
 
           toInfo(e) {
-            this.$router.push({
-              path: "/bookInfo",
-              query: {
-                ID: e.bookId
-              }
+            this.$router.push({path: "/bookInfo", query: {ID: e.bookId}
             });
           },
             showCategory(index) {

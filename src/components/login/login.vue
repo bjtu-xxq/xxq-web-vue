@@ -98,7 +98,7 @@ export default {
             password:this.ruleForm.pass
           }).then(response => { // 用户名和密码将转为json传到后台接口
             let res = response.data // 用res承接返回后台的json文件(像使用数组那样)
-            console.log(this.ruleForm)
+            console.log(response)
             if (res.status == 'success') { // 显示登录结果//res.status == '1'
               console.log('登录成功')
               this.$message({
@@ -107,8 +107,9 @@ export default {
                 type: 'success',
                 center: true
               })
+              console.log(res)
               this.$cookies.set('status', 'logined')
-              this.$cookies.set('user_ID', res.ID)
+              this.$cookies.set('userID', res.userId)
               this.$cookies.set('Avatar', res.Avatar)
               this.$router.push({
                 path: '/home'

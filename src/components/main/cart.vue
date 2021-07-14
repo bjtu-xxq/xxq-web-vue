@@ -31,7 +31,7 @@
                         <el-col :span="9" class="bookRow">{{ book.bookName }}</el-col>
                         <el-col :span="3" class="bookRow">{{ book.price }}</el-col>
                         <el-col :span="3" class="bookRow">{{ book.orderMount }}</el-col>
-                        <el-col :span="3" class="bookRow">{{ book.Price * book.orderMount }}</el-col>
+                        <el-col :span="3" class="bookRow">{{ book.price * book.orderMount }}</el-col>
                         <el-col :span="3" class="bookRow">
                             <el-button type="danger" icon="el-icon-delete" @click="cartDelete(book)" circle></el-button>
                         </el-col>
@@ -109,8 +109,8 @@
                 console.log("success");
                 console.log(this.cart);
                 for (let i = 0; i < this.cart.length; i++) {
-                    count += parseFloat(this.cart[i].count);
-                    totalPrice += parseFloat(this.cart[i].unit_Price * this.cart[i].count);
+                    count += parseFloat(this.cart[i].orderMount);
+                    totalPrice += parseFloat(this.cart[i].price * this.cart[i].orderMount);
                 }
                 this.count = count;
                 this.totalPrice = totalPrice;
@@ -121,11 +121,10 @@
                 axios.delete('/api/order/'+e.orderId).then(response => {
                     console.log('删除成功')
                     console.log(response)
+
+                  console.log(e.orderId)
                     this.$message({
-                        showClose: true,
-                        message: '删除成功！',
-                        type: 'success',
-                        center: true
+                      showClose: true, message: '删除成功！', type: 'success', center: true
                     });
                     this.reload();
                 });

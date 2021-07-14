@@ -75,11 +75,7 @@ export default {
                 this.transRecBooks = Arr;
             },
             toInfo(e) {
-                this.$router.push({
-                    path: "/bookInfo",
-                    query: {
-                        ID: e.ID
-                    }
+                this.$router.push({path: "/bookInfo", query: {ID: e.bookId}
                 });
             },
             toCate(e) {

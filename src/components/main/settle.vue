@@ -37,11 +37,11 @@
                     <div class="commodity" v-for="(book, index) in cart" :key="index">
                         <el-row type="flex" align="middle">
                             <el-col :span="3">
-                                <img class="bookImg" :src="'img/' + book.book_Img">
+                                <img class="bookImg" :src="book.imageUrl">
                             </el-col>
-                            <el-col :span="9">{{ book.book_Name }}</el-col>
-                            <el-col :span="6">{{ book.unit_Price }}</el-col>
-                            <el-col :span="6">{{ book.count }}</el-col>
+                            <el-col :span="9">{{ book.bookName }}</el-col>
+                            <el-col :span="6">{{ book.price }}</el-col>
+                            <el-col :span="6">{{ book.orderMount }}</el-col>
                         </el-row>
                     </div>
                     <el-divider></el-divider>
@@ -49,11 +49,15 @@
                     <div class="orderInfo">
                         <div class="left">
                             <div class="infoTitle">收货信息</div>
-                            <div class="info">名字：{{ userInfo.Logname }}</div>
-                            <div class="info">电话：{{ userInfo.Phone }}</div>
-                            <div class="info">地址：{{ userInfo.Address }}</div>
+                            <div class="info">名字：{{ userInfo.name }}</div>
+                            <div class="info">电话：{{ userInfo.phone }}</div>
+                          <div class="info">省份：{{ userInfo.state}}</div>
+                          <div class="info">城市：{{ userInfo.city }}</div>
+                          <div class="info">区/县：{{ userInfo.district}}</div>
+                            <div class="info">地址：{{ userInfo.address }}</div>
                         </div>
-                        <el-button class="modify" type="info" @click="handleEdit()" plain>修改</el-button>
+                        <el-button class="modify" type="info" @click="modify()" plain>修改</el-button>
+                      <el-button class="modify2" type="info" @click="editVisible1=true" plain>新建</el-button>
                     </div>
                     <el-divider></el-divider>
 
@@ -77,7 +81,8 @@
                         <div class="left">
                             <div class="infoTitle">收货信息：无</div>
                         </div>
-                        <el-button class="modify" type="info" @click="modify()" plain>修改</el-button>
+                        <el-button class="modify1" type="info" @click="modify1()" plain>修改</el-button>
+
                     </div>
                     <el-divider></el-divider>
 
@@ -92,22 +97,49 @@
                 </div>
             </div>
 
+          <el-dialog title="新建收货信息" :visible.sync="editVisible1" width="35%">
+            <el-form label-position="left" :rules="rules" ref="userInfo" :model="userInfo" label-width="100px">
+              <el-form-item label="名字" prop="Logname">
+                <el-input v-model.number="userInfo.name"></el-input>
+              </el-form-item>
+              <el-form-item label="电话" prop="Phone">
+                <el-input v-model.number="userInfo.phone"></el-input>
+              </el-form-item>
+              <el-form-item label="省份" prop="Phone">
+                <el-input v-model.number="userInfo.state"></el-input>
+              </el-form-item>
+              <el-form-item label="城市" prop="Phone">
+                <el-input v-model.number="userInfo.city "></el-input>
+              </el-form-item>
+              <el-form-item label="区县" prop="Phone">
+                <el-input v-model.number=" userInfo.district"></el-input>
+              </el-form-item>
+              <el-form-item label="收货地址" prop="Address">
+                <el-input type="textarea" v-model="userInfo.address"></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="newman()" plain>新建</el-button>
+              <el-button type="danger" @click="editVisible1 = false" plain>取消</el-button>
+            </div>
+          </el-dialog>
             <!-- 收货信息编辑弹出框 -->
             <el-dialog title="修改收货信息" :visible.sync="editVisible" width="35%">
-                <el-form label-position="left" :rules="rules" ref="userInfo" :model="userInfo" label-width="100px">
-                    <el-form-item label="名字" prop="Logname">
-                        <el-input v-model.number="userInfo.Logname"></el-input>
-                    </el-form-item>
-                    <el-form-item label="电话" prop="Phone">
-                        <el-input v-model.number="userInfo.Phone"></el-input>
-                    </el-form-item>
-                    <el-form-item label="收货地址" prop="Address">
-                        <el-input type="textarea" v-model="userInfo.Address"></el-input>
-                    </el-form-item>
+                <el-form label-position="left" :rules="rules" ref="userInfo" :model="receiverlist" label-width="100px">
+                  <el-select v-model="userInfo.category" style="width: 400px">
+                    <el-option
+                      v-for="item in receiverlist"
+                      :key="item.value"
+                      :label="'姓名：'+item.name+'   手机号:'+item.phone+'    地址：'+item.address"
+                      :value="'姓名：'+item.name+'   手机号:'+item.phone+'    地址：'+item.address">
+
+                    </el-option>
+                  </el-select>
                 </el-form>
 
                 <div slot="footer" class="dialog-footer">
-                    <el-button type="primary" @click="modify('userInfo')" plain>修改</el-button>
+                    <el-button type="primary" @click="showmsg()" plain>修改</el-button>
+<!--                  修改-->
                     <el-button type="danger" @click="editVisible = false" plain>取消</el-button>
                 </div>
             </el-dialog>
@@ -124,36 +156,63 @@ export default {
     return {
       input: '',
       userInfo: [],
+      receiverlist: [],
       postage: 0,
       cart: [],
       count: 0,
       totalPrice: 0,
-      editVisible: false
+      editVisible: false,
+      editVisible1: false
     }
   },
   created () {
-    var address = 'settleUserInfo'
     // eslint-disable-next-line camelcase
     var user_ID = this.$cookies.get('user_ID')
     let count = 0
     let totalPrice = 0
-
     this.cart = this.$route.query.cart
-
     for (let i = 0; i < this.cart.length; i++) {
-      count += parseFloat(this.cart[i].count)
-      totalPrice += parseFloat(this.cart[i].unit_Price * this.cart[i].count)
+      count += parseFloat(this.cart[i].orderMount)
+      totalPrice += parseFloat(this.cart[i].price * this.cart[i].orderMount)
     }
     this.count = count
     this.totalPrice = totalPrice
 
-    axios.post(address, user_ID).then(res => {
-      this.userInfo = res.data // 获取数据
-      console.log('success')
-      console.log(this.userInfo)
-    })
+    // axios.get('/api/user/'+this.$cookies.get("userId"), this.$cookies.get("userId")).then(res => {
+    //   this.userInfo = res.data.result // 获取数据
+    //   if(userInfo.data.status=='success'){
+    //   console.log('success')
+    //   console.log(this.userInfo)
+    // }
+    // else{
+    //   console.log('fail')
+    // }}
+    // )
   },
   methods: {
+    newman(){
+      console.log(this.userInfo, this.userInfo.phone, this.userInfo.address)
+      axios.post('/api/receiver/',
+        {
+          name:this.userInfo.name,
+          phone:this.userInfo.phone,
+          state:this.userInfo.state,
+          city:this.userInfo.city,
+          district:this.userInfo.district,
+          address:this.userInfo.address
+        }).then(res =>{
+          let data=res.data;
+        if(data.status=='success'){
+          console.log("success")
+        }
+        this.editVisible1 = false;
+      })
+    },
+    showmsg(){
+      this.userInfo.name=this.receiverlist.name;
+      this.userInfo.phone=this.receiverlist.phone;
+      this.editVisible=false;
+    },
     goBack () {
       this.$router.go(-1)
     },
@@ -166,42 +225,35 @@ export default {
     handleEdit () {
       this.editVisible = true
     },
-    modify (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          console.log('修改成功！')
-          this.$message({
-            showClose: true,
-            message: '修改成功！',
-            type: 'success',
-            center: true
-          })
-          this.editVisible = false
-        } else {
-          console.log('error!')
-          return false
+    modify () {
+      axios.get('/api/receiver/list/').then(res =>{
+        this.receiverlist=res.data.result.list
+        if(res.data.status=="success"){
+          console.log('success')
+          this.editVisible = true
+
         }
-      })
-    },
+
+    })},
     toPay (e) {
-      // if (!this.cart[0]) {
-      //   this.$message({
-      //     showClose: true,
-      //     message: '无订单信息！',
-      //     type: 'warning',
-      //     center: true
-      //   })
-      // } else {
+      if (!this.cart[0]) {
+        this.$message({
+          showClose: true,
+          message: '无订单信息！',
+          type: 'warning',
+          center: true
+        })
+      } else {
         this.$router.push({
           path: '/shopping/pay',
           query: {
-            User_name: e.ID,
-            User_tel: e.Phone,
-            User_address: e.Address,
+            user_name: e.name,
+            User_tel: e.phone,
+            User_address: e.address,
             cart: this.cart
           }
         })
-      //}
+      }
     }
   }
 }
@@ -287,10 +339,10 @@ export default {
     }
 
     .settle .viewBox .orderInfo .left .info {
-        width: 90%;
-        height: 40px;
-        line-height: 40px;
-        font-size: 17px;
+        width: 80%;
+        height: 25px;
+        line-height: 0px;
+        font-size: 18px;
         color: #606266;
     }
 

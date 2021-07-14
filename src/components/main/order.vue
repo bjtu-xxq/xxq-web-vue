@@ -8,31 +8,31 @@
             <el-table :data="unPayList" style="width: 100%" height="100%">
               <el-table-column prop="picture" label="商品" width="120">
                 <template slot-scope="scope">
-                  <img :src="unPayList.picPath" class="cover">
+                  <img :src="scope.row.book.imageUrl" class="cover">
                 </template>
               </el-table-column>
 
               <el-table-column prop="name" show-overflow-tooltip>
-                <template slot-scope="scope">{{ unPayList.name }}</template>
+                <template slot-scope="scope">{{ scope.row.book.bookName }}</template>
               </el-table-column>
 
               <el-table-column prop="storeName" label="店铺名" show-overflow-tooltip>
-                <template slot-scope="scope">{{ unPayList.name }}</template>
+                <template slot-scope="scope">{{ scope.row.book.storeId }}</template>
               </el-table-column>
 
               <el-table-column prop="price" label="单价" width="100">
-                <template slot-scope="scope">￥{{ unPayList.price }}</template>
+                <template slot-scope="scope">￥{{scope.row.book.price }}</template>
 <!--                //scope.row.book.price-->
               </el-table-column>
 
               <el-table-column prop="number" label="数量" show-overflow-tooltip>
                 <template slot-scope="scope">
 <!--                  scope.row.order.number-->
-                  <el-input-number v-model="order.number" size="small" :min="1" :disabled="true">{{ order.number }}</el-input-number>
+                  <el-input-number v-model="scope.row.book.orderMount" size="small" :min="1" :disabled="true">{{ scope.row.book.orderMount }}</el-input-number>
                 </template>
               </el-table-column>
 
-              <el-table-column prop="totalPrice" label="金额" width="120"><template slot-scope="scope">￥{{ order.totalPrice }}</template>
+              <el-table-column prop="totalPrice" label="金额" width="120"><template slot-scope="scope">￥{{ scope.row.book.totalPrice }}</template>
               </el-table-column>
 
               <el-table-column
@@ -206,6 +206,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: "Order",
   inject: ['reload'],
@@ -316,7 +318,11 @@ export default {
   },
 
   methods: {
+    creat(){
+      this.unPayList = this.$route.query.unPayList
+    },
     handleClick(tab, event) {
+
       if(this.activeName === 'first') {
         this.orderManage();
       }else if(this.activeName === 'second') {
@@ -370,57 +376,16 @@ export default {
       }
     },
 
-    showMain() {
-      this.$axios
-        .post('/book/renwensheke', {
-          id: this.$session.get("key"),
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            var data = successResponse.data.data;
-            this.$router.push({path: '/main', query: {mainList: data}});
-          }
-        })
-        .catch(failResponse => {
-          alert("失败！");
-        })
-    },
-
-    shopCart() {
-      this.$axios
-        .post('/cart/all', {
-          id: this.$session.get("key"),
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            var data = successResponse.data.data;
-            this.$router.push({path: '/shopCart', query: {cartList: data}});
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-          alert('失败！');
-        })
-    },
-
     orderManage() {
-      this.$axios  // 获取未支付的订单
-        .post('/order/userweizhifu', {
-          userId: this.$session.get("key"), // 当前用户
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            var data = successResponse.data.data;
-            this.reload();
-            this.$router.push({path: '/order', query: {unPayList: data}});
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-          alert("失败！");
-        })
+      axios.get('/api/order/user/list').then(res =>{
+        if(res.data.status=='success'){
+          console.log(res.data)
+          var data = res.data.result.list;
+          this.reload();
+          this.$router.push({path: "/order", query: {unPayList: data}});
+
+        }})
+
     },
 
     personalInfoSetting() {
