@@ -78,6 +78,15 @@ export default {
       })
     },
     tosuccess(){
+      axios.put('/api/order/pay/'+this.$route.query.cart.orderId,
+        {paymentType:'1'}).then(res =>
+      {
+        console.log(res.data)
+        if(res.data.status='success')
+        {
+          console.log("成功")
+        }
+      })
       this.$router.push({
         path: '/shopping/successpay'
       })

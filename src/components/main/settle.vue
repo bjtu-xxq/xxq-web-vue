@@ -246,9 +246,9 @@ export default {
         this.$router.push({
           path: '/shopping/pay',
           query: {
-            user_name: e.name,
-            User_tel: e.phone,
-            User_address: e.address,
+            name: e.name,
+            phone: e.phone,
+            address: e.address,
             cart: this.cart
           }
         })

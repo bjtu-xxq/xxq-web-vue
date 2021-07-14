@@ -11,7 +11,6 @@
                   <img :src="scope.row.book.imageUrl" class="cover">
                 </template>
               </el-table-column>
-
               <el-table-column prop="name" show-overflow-tooltip>
                 <template slot-scope="scope">{{ scope.row.book.bookName }}</template>
               </el-table-column>
@@ -28,7 +27,7 @@
               <el-table-column prop="number" label="数量" show-overflow-tooltip>
                 <template slot-scope="scope">
 <!--                  scope.row.order.number-->
-                  <el-input-number v-model="scope.row.book.orderMount" size="small" :min="1" :disabled="true">{{ scope.row.book.orderMount }}</el-input-number>
+                  <el-input-number v-model="scope.row.book.orderMount" size="small" :min="1" :disabled="true">{{scope.row.book.orderMount }}</el-input-number>
                 </template>
               </el-table-column>
 
@@ -38,8 +37,8 @@
               <el-table-column
                 prop="operation">
                 <template slot-scope="scope">
-                  <el-button size="small" type="success" plain @click="continuePay(order.id, order.totalPrice)">继续支付</el-button>
-                  <el-button size="small" type="danger" plain @click="deleteOrder(order.id)">取消订单</el-button>
+                  <el-button size="small" type="success" plain @click="continuePay(scope.row.order.id, scope.row.order.totalPrice)">继续支付</el-button>
+                  <el-button size="small" type="danger" plain @click="deleteOrder(scope.row.order.id)">取消订单</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -58,6 +57,7 @@
               </el-dialog>
             </div>
           </div>
+
         </el-tab-pane>
 
         <el-tab-pane label="已支付" name="second">
@@ -66,33 +66,33 @@
               <el-table-column prop="picture" label="商品"
                 width="120">
                 <template slot-scope="scope">
-                  <img :src="payList.picPath" class="cover">
+                  <img :src="payList.imageUrl" class="cover">
                 </template>
               </el-table-column>
 
               <el-table-column
                 prop="name"
                 show-overflow-tooltip>
-                <template slot-scope="scope">{{ payList.name }}</template>
+                <template slot-scope="scope">{{scope.row.book.name }}</template>
               </el-table-column>
 
               <el-table-column prop="storeName" label="店铺名" show-overflow-tooltip>
-                <template slot-scope="scope">{{ payList.name }}</template>
+                <template slot-scope="scope">{{ scope.row.book.name }}</template>
 <!--                scope.row.store.name-->
               </el-table-column>
 
               <el-table-column prop="price" label="单价" width="100">
-                <template slot-scope="scope">￥{{ payList.price }}</template>
+                <template slot-scope="scope">￥{{ scope.row.book.price }}</template>
               </el-table-column>
 
               <el-table-column prop="number" label="数量" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <el-input-number v-model="order.number" size="small" :min="1" :disabled="true">{{ order.number }}</el-input-number>
+                  <el-input-number v-model="scope.row.order.number" size="small" :min="1" :disabled="true">{{scope.row.order.number }}</el-input-number>
                 </template>
               </el-table-column>
 
               <el-table-column prop="totalPrice" label="金额" width="120">
-                <template slot-scope="scope">￥{{ order.totalPrice }}</template>
+                <template slot-scope="scope">￥{{ scope.row.order.totalPrice }}</template>
               </el-table-column>
             </el-table>
           </div>
@@ -103,21 +103,21 @@
             <el-table :data="sendList" style="width: 100%" height="100%">
               <el-table-column prop="picture" label="商品" width="120">
                 <template slot-scope="scope">
-                  <img :src="sendList.picPath" class="cover">
+                  <img :src="scope.row.book.picPath" class="cover">
                 </template>
               </el-table-column>
 
               <el-table-column prop="name" width="400">
-                <template slot-scope="scope">{{ sendList.name }}</template>
+                <template slot-scope="scope">{{ scope.row.book.name }}</template>
 <!--                scope.row.book.name-->
               </el-table-column>
 
               <el-table-column prop="storeName" label="店铺名" show-overflow-tooltip>
-                <template slot-scope="scope">{{ store.name }}</template>
+                <template slot-scope="scope">{{ scope.row.store.name }}</template>
               </el-table-column>
 
               <el-table-column prop="price" label="单价" width="120">
-                <template slot-scope="scope">￥{{ sendList.price }}</template>
+                <template slot-scope="scope">￥{{ scope.row.book.price }}</template>
               </el-table-column>
 
               <el-table-column prop="number" label="数量" show-overflow-tooltip>
@@ -319,10 +319,9 @@ export default {
 
   methods: {
     creat(){
-      this.unPayList = this.$route.query.unPayList
+      this.orderManage();
     },
     handleClick(tab, event) {
-
       if(this.activeName === 'first') {
         this.orderManage();
       }else if(this.activeName === 'second') {
@@ -357,9 +356,8 @@ export default {
           .catch(failResponse => {
             alert("失败！");
           })
-      }else {
-        this.$axios  // 获取已收货的订单
-          .post('/order/useryiqianshou', {
+      }else {// 获取已收货的订单
+        axios.post('/order/useryiqianshou', {
             userId: this.$session.get("key"), // 当前用户
           })
           .then(successResponse => {
@@ -379,13 +377,10 @@ export default {
     orderManage() {
       axios.get('/api/order/user/list').then(res =>{
         if(res.data.status=='success'){
-          console.log(res.data)
-          var data = res.data.result.list;
-          this.reload();
-          this.$router.push({path: "/order", query: {unPayList: data}});
-
+          console.log(res.data.result.list)
+          this.unPayList = res.data.result.list;
+           this.reload();
         }})
-
     },
 
     personalInfoSetting() {
@@ -405,8 +400,8 @@ export default {
         })
     },
 
-    storeManage() {axios
-        .post('/store/allbooks', {
+    storeManage() {
+      axios.post('/store/allbooks', {
           phone: this.$session.get("key"),
         })
         .then(successResponse => {
