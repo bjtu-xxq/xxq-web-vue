@@ -21,22 +21,24 @@
             <el-aside width="300px">
                 <el-card class="leftNav">
                     <img src="../../../static/cateNav.png" class="leftImg" />
-
-                    <div class="navItem" :class="index == showCategoryIndex ? 'cur' : ''" v-for="(item, index) in navItems" :key="index" @click="showCategory(index)">{{item.name}}</div>
+                    <div class="navItem" :class="index === showCategoryIndex ? 'cur' : ''"
+                      v-for="(item, index) in navItems"
+                      :key="index"
+                      @click="showCategory(index)">
+                      {{item.name}}
+                    </div>
                     <div class="navItem" @click="toTop()"><i class="el-icon-arrow-up" style="font-size: 23px;"></i></div>
                 </el-card>
             </el-aside>
-
             <el-main v-loading.fullscreen.lock="loading" element-loading-background="#FFFFFF">
                 <el-row>
-                    <el-card class="row" v-for="(book, index) in Books[showCategoryIndex].slice((currentPage-1)*pagesize,currentPage*pagesize)" :key="index" :body-style="{ padding: '0px' }">
+                    <el-card class="row" v-for="(book, index) in Books[showCategoryIndex]" :key="index" :body-style="{ padding: '0px' }">
 <!--                      //分页-->
                         <img class="img" @click="toInfo(book)" :src="book.imageUrl">
                         <el-link class="name" @click="toInfo(book)" :underline="false">
                           <i class="el-icon-reading readIcon"></i>
                           {{ book.name }}</el-link>
                         <div class="author">{{ book.author }}</div>
-
                         <div style="position: absolute; bottom: 0;">
                             <el-row type="flex" align="middle">
                                 <el-col :span="12" class="price">¥{{ book.price }}</el-col>
@@ -51,7 +53,7 @@
                     </el-card>
                 </el-row>
                 <el-row class="page">
-                    <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pagesize" :total="Books[showCategoryIndex].length">
+                    <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pagesize" :total="MAXlength">
                     </el-pagination>
                 </el-row>
             </el-main>
@@ -69,6 +71,7 @@
                 loading: true,
                 scroll: 0, //第一步：定义初始滚动高度
                 activeIndex: "1",
+                MAXlength: 0,
                 bookPath: 1,
                 searchText: "", //搜索关键字
                 showCategoryIndex: 0,
@@ -77,29 +80,45 @@
                  []
                 ],
                 currentPage: 1,
-                pagesize: 40
+                pagesize: 50
             };
         },
         //第二步：mounted中的方法代表dom已经加载完毕
-        mounted: function() {
-            window.addEventListener('scroll', this.handleScroll);
-        },
+      mounted: function() {
+        window.addEventListener('scroll', this.handleScroll);
+      },
         created() {
           axios.get('/api/category/list').then(res =>{
             this.navItems=res.data.result.list;
             console.log(this.navItems);
           })
-             axios.get('/api/book/list').then(res => {
-                    this.Books[0] = res.data.result.list; //获取数据
-                    console.log("success");
-                    console.log(this.Books[0]);
-                    console.log(res.data.result)
-                })
+          axios.get('/api/book/list').then(res => {
+            let data=res.data.result;
+            this.MAXlength=data.total/50;
+            this.Books[0] = res.data.result.list; //获取数据
+            console.log("success");
+            console.log(this.Books[0]);
+            console.log(this.MAXlength);
+            console.log(res.data.result)
+            console.log(this.navItems.length)
+          })
+          // for (let i = 1; i <= this.navItems.length; i++) {
+          //   axios.get('/api/book/category/'+this.navItems[i-1].cateId+'/list/').then(res => {
+          //     this.Books[i] = res.data.result.list; //获取数据
+          //     console.log("success");
+          //     console.log(this.Books[i]);
+          //     console.log(res.data.result)
+          //   })
+          // }
           this.loading = false;
         },
         methods: {
             handleCurrentChange: function(currentPage) {
               this.currentPage = currentPage
+              axios.get('/api/book/list', this.currentPage).then(res => {
+                this.Books[this.showCategoryIndex] = res.data.result.list
+                //this.reload();
+              })
             },
             //第三步：用于存放页面函数
             handleScroll() {
@@ -122,6 +141,12 @@
           },
             showCategory(index) {
                 this.showCategoryIndex = index;
+                axios.get('/api/book/category/'+this.navItems[index].cateId+'/list/').then(res => {
+                this.Books[index] = res.data.result.list; //获取数据
+                console.log("success");
+                console.log(this.Books[index]);
+                console.log(res.data.result)
+              })
             },
             addToCart(e) {
                 this.$confirm("确定将此书加入购物车?", "smallFrog", {
@@ -204,7 +229,7 @@
         margin-bottom: 20px;
         color: #ffffff;
         position: relative;
-        border-radius: 12px;
+        border-radius: 20px;
     }
 
     .leftNav .navItem {
