@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- <el-header>
+       <el-header>
             <el-row type="flex" justify="space-between" align="middle">
                 <el-col :span="8" class="title-left">
                     <i class="el-icon-menu"></i>
@@ -16,12 +16,13 @@
                     <el-tag type="warning" size="medium">Books</el-tag>
                 </el-col>
             </el-row>
-        </el-header> -->
+        </el-header>
 
         <el-container>
             <el-aside width="300px">
                 <el-card class="leftNav">
                     <img src="../../../static/cateNav.png" class="leftImg" />
+
                     <div class="navItem" :class="index == showCategoryIndex ? 'cur' : ''" v-for="(item, index) in navItems" :key="index" @click="showCategory(index)">{{item.name}}</div>
                     <div class="navItem" @click="toTop()"><i class="el-icon-arrow-up" style="font-size: 23px;"></i></div>
                 </el-card>
@@ -142,19 +143,17 @@
                         type: "warning"
                     })
                     .then(() => {
-                        var address = "addToCart.php";
-
-                        axios.post(address, {
-                            user_ID: this.$cookies.get('user_ID'),
-                            book_ID: e.bookId,
-                            book_Img: e.imageUrl,
-                            book_Name: e.name,
-                            unit_Price: e.price,
-                            count: 1
+                      axios.post('/api/order/', {
+                        userid: this.$cookies.get('user_ID'),
+                        storeId: e.storeId,//书籍ID
+                        bookId: e.bookId,
+                        imageUrl: e.imageUrl,
+                        bookName: e.name,
+                        price: e.price,
+                        orderMount: 1
                         }).then(res => {
                             console.log("success");
                         });
-
                         this.$message({
                         type: 'success',
                         message: '成功加入购物车！'
