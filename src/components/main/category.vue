@@ -132,6 +132,8 @@
             axios.get('/api/book/search/'+this.searchText+'/list/').then(res =>{
               console.log(res.data)
             this.Books[0]=res.data.result.list;
+              let data=res.data.result;
+              this.MAXlength=data.total/50;
               this.reload();
             })
           },
@@ -143,6 +145,8 @@
                 this.showCategoryIndex = index;
                 axios.get('/api/book/category/'+this.navItems[index].cateId+'/list/').then(res => {
                 this.Books[index] = res.data.result.list; //获取数据
+                  let data=res.data.result;
+                  this.MAXlength=data.total/50;
                 console.log("success");
                 console.log(this.Books[index]);
                 console.log(res.data.result)
