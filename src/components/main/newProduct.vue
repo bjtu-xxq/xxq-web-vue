@@ -30,8 +30,10 @@
 import axios from 'axios'
 
 export default {
+  inject: ['reload'],
   data () {
     return {
+
       newPcBooks: [],
       newEnBooks: [],
       newOtherBooks: []

@@ -77,14 +77,12 @@
           <el-table :data="orderList" style="width: 100%" height="250">
             <el-table-column prop="picture" label="商品" width="120">
               <template slot-scope="scope">
-                <img :src="orderList.picPath" class="cover">
+                <img :src="scope.row.imageUrl" class="cover">
               </template>
             </el-table-column>
 
-            <el-table-column
-              prop="name"
-              width="300">
-              <template slot-scope="scope">{{ scope.row.name }}</template>
+            <el-table-column prop="name"  label="商品名" width="300">
+              <template slot-scope="scope">{{ scope.row.bookName }}</template>
             </el-table-column>
 
             <el-table-column prop="price" label="单价" width="80">
@@ -92,23 +90,23 @@
             </el-table-column>
 
             <el-table-column prop="user" label="用户" width="200">
-              <template slot-scope="scope">{{ scope.row.username }}</template>
+              <template slot-scope="scope">{{ scope.row.userId }}</template>
             </el-table-column>
 
             <el-table-column prop="number" label="数量" show-overflow-tooltip>
               <template slot-scope="scope">
-                <el-input-number v-model="num" size="small" :min="1" :disabled="true">{{scope.row.number }}</el-input-number>
+                <el-input-number v-model="num" size="small" :min="1" :disabled="true">{{scope.row.orderMount }}</el-input-number>
               </template>
             </el-table-column>
 
             <el-table-column prop="total" label="金额" width="120">
-              <template slot-scope="scope">{{ scope.row.totalPrice }}</template>
+              <template slot-scope="scope">{{ scope.row.orderMount * scope.row.price  }}</template>
             </el-table-column>
 
             <el-table-column
               prop="operation">
               <template slot-scope="scope">
-                <el-button size="medium" type="primary" plain @click="orderMoreInfo(scope.row.bookId)">详情</el-button>
+                <el-button size="medium" type="primary" plain @click="orderMoreInfo(scope.row.orderId)">详情</el-button>
                     </template>
             </el-table-column>
           </el-table>
@@ -221,15 +219,12 @@
         </el-dialog>
       </div>
     <div>
-      <el-dialog title="订单详情" :visible.sync="orderDialog">
-        <el-card>
-          <div>
             <el-dialog title="订单详情" :visible.sync="orderDialog">
               <el-card>
                 <div>
                   <el-form :label-position="labelPosition" label-width="80px" :model="orderInfo">
                     <el-form-item label="书籍名称">
-                      <el-input v-model="orderInfo.name" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.bookName" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
 
                     <el-form-item label="书籍单价">
@@ -237,27 +232,18 @@
                     </el-form-item>
 
                     <el-form-item label="购买数量">
-                      <el-input v-model="orderInfo.number" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.orderMount" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
 
                     <el-form-item label="金额总计">
-                      <el-input v-model="orderInfo.totalPrice" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.price" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
 
                     <el-form-item label="用户昵称">
-                      <el-input v-model="orderInfo.username" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.userId" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
-
-                    <el-form-item label="用户地址">
-                      <el-input v-model="orderInfo.address" autocomplete="off" style="width: 450px" disabled></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="用户电话">
-                      <el-input v-model="orderInfo.id" autocomplete="off" style="width: 450px" disabled></el-input>
-                    </el-form-item>
-
                     <el-form-item label="订单时间">
-                      <el-input v-model="orderInfo.placeDate" autocomplete="off" style="width: 450px" disabled></el-input>
+                      <el-input v-model="orderInfo.finished" autocomplete="off" style="width: 450px" disabled></el-input>
                     </el-form-item>
                   </el-form>
 
@@ -268,9 +254,6 @@
                 </div>
               </el-card>
             </el-dialog>
-          </div>
-        </el-card>
-      </el-dialog>
     </div>
   </div>
 </template>
@@ -471,14 +454,13 @@ export default {
       if(this.activeName === 'first') {
         this.storeManage();
       }else {
-        alert("结果加载中，请稍候...");// 获取已支付和已发货的订单
        axios.get('/api/order/store/list')
           .then(successResponse => {
             console.log(successResponse.data)
             if(successResponse.data.status=='success'){
 
               this.$message({showClose:false ,message:'打开成功',type:'success',center:true});
-              var data = successResponse.data.data;
+              var data = successResponse.data.result.list;
               this.orderList = data;
             }
           })
@@ -608,13 +590,11 @@ export default {
       console.log(id)
       axios.get('/api/order/'+id, {
         orderId: id})
-        .then(successResponse => {
-
-            this.orderInfo = successResponse.data.data;
+        .then(successResponse => {console.log(successResponse.data)
+          this.orderInfo = successResponse.data.result;
              this.orderDialog = true;
         })
         .catch(failResponse => {
-
         })
     },
 

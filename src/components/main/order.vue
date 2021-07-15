@@ -21,7 +21,7 @@
               <el-table-column label="金额" width="120"><template slot-scope="scope">￥{{ scope.row.orderMount * scope.row.price }}</template></el-table-column>
               <el-table-column prop="operation">
                 <template slot-scope="scope">
-                  <el-button size="small" type="success" plain @click="continuePay(scope.row.orderId)">继续支付</el-button>
+<!--                  <el-button size="small" type="success" plain @click="continuePay(scope.row.orderId)">继续支付</el-button>-->
                   <el-button size="small" type="danger" plain @click="deleteOrder(scope.row.orderId)">取消订单</el-button>
                 </template>
               </el-table-column>
@@ -259,10 +259,9 @@ export default {
           console.log('删除成功')
           console.log(response)
           console.log(e)
-          this.$message({
-            showClose: true, message: '删除成功！', type: 'success', center: true
-          });
+          this.$message({showClose: true, message: '删除成功！', type: 'success', center: true});
           this.reload();
+          location.reload();
         });
       },
 
@@ -271,7 +270,6 @@ export default {
       axios.put('/api/order/finish/'+id,{orderId: id})
         .then(successResponse => {
             console.log(successResponse.data)
-
             if(successResponse.data.status=='success'){
               var data = successResponse.data.result.list;
               this.$router.push({path: '/order', query: {unPayList: data}});
@@ -280,10 +278,9 @@ export default {
             }
             else {
               this.$message({showClose:false ,message:'确认收货失败', center:true,type:'error'})
-              this.reload();
+
             }
-
-
+          location.reload();
         })
         .catch(failResponse => {
         })

@@ -121,7 +121,6 @@
                 axios.delete('/api/order/'+e.orderId).then(response => {
                     console.log('删除成功')
                     console.log(response)
-
                   console.log(e.orderId)
                     this.$message({
                       showClose: true, message: '删除成功！', type: 'success', center: true
