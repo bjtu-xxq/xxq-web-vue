@@ -233,7 +233,7 @@
             </el-form>
 
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" style="width: 30%" @click="newBookDialog = false">确 定</el-button>
+              <el-button type="primary" style="width: 30%" @click="save()">确 定</el-button>
               <el-button style="width: 30%; margin-left: 20%" @click="newBookDialog = false">取 消</el-button>
             </div>
           </div>
@@ -297,6 +297,10 @@
 </template>
 
 <script>
+
+import bookInfo from './bookInfo'
+import axios from "axios";
+
 export default {
   name: "Store",
   inject: ['reload'],
@@ -449,237 +453,222 @@ export default {
       console.log(key, keyPath);
     },
 
-    // handleClick(tab, event) {
-    //   if(this.activeName === 'first') {
-    //     this.storeManage();
-    //   }else {
-    //     alert("结果加载中，请稍候...");
-    //     this.$axios  // 获取已支付和已发货的订单
-    //       .post('/order/'+this.$cookies.id,this.$cookies)
-    //       .then(successResponse => {
-    //         if (successResponse.data.code === 200) {
-    //           var data = successResponse.data.data;
-    //           this.orderList = data;
-    //         }else {
-    //           alert(successResponse.data.message);
-    //         }
-    //       })
-    //       .catch(failResponse => {
-    //         alert("失败！");
-    //       })
-    //   }
-    // },
-    //
-    // handleDelete(index, row) {
-    //   console.log(index, row);
-    // },
-    //
+    handleClick(tab, event) {
+      if(this.activeName === 'first') {
+        this.storeManage();
+      }else {
+        alert("结果加载中，请稍候...");// 获取已支付和已发货的订单
+       axios.post('/order/'+this.$cookies.id,this.$cookies)
+          .then(successResponse => {
+            if (successResponse.data.code === 200) {
+              var data = successResponse.data.data;
+              this.orderList = data;
+            }else {
+              alert(successResponse.data.message);
+            }
+          })
+
+      }
+    },
+    handleDelete(index, row) {
+      console.log(index, row);
+    },
+    save(){
+      axios.post('/api/book/',{
+        Book:this.newBookInfo
+      }).then(res=>{
+        console.log(this.newBookInfo)
+        console.log(res.data)
+        if(res.data.status='error')
+        {
+          this.$message({showClose: false, message: res.data.msg, type: 'success', center: true});
+        }
+        else{
+          this.$message({showClose: false, message: "添加成功", type: 'success', center: true});
+        }
+        // let bookinfo=res.data.result.list
+      })
+      this.newBookDialog = false
+  },
     // orderManage() {
-    //   this.$axios  // 获取未支付的订单
-    //     .post('/order/userweizhifu', {
+    //  axios.post('/order/userweizhifu', {
     //       userId: this.$session.get("key"), // 当前用户
     //     })
     //     .then(successResponse => {
-    //       if (successResponse.data.code === 200) {
     //         var data = successResponse.data.data;
     //         this.$router.push({path: '/order', query: {unPayList: data}});
-    //       }else {
-    //         alert(successResponse.data.message);
-    //       }
     //     })
     //     .catch(failResponse => {
-    //       alert("失败！");
+    //
     //     })
     // },
-    //
-    // personalInfoSetting() {
-    //   this.$axios
-    //     .post('/entity', {
-    //       id: this.$session.get("key"),
-    //     })
-    //     .then(successResponse => {
-    //       if (successResponse.data.code === 200) {
-    //         var data = successResponse.data.data;
-    //         this.$router.push({path: '/personalSetting', query: {personalInfo: data}});
-    //       }else {
-    //         alert(successResponse.data.message);
-    //       }
-    //     })
-    //     .catch(failResponse => {
-    //       alert('失败！');
-    //     })
-    // },
-    //
-    // storeManage() {
-    //   this.$axios  // 获取图书
-    //     .post('/store/allbooks', {
-    //       phone: this.$session.get("key"), // 当前用户
-    //     })
-    //     .then(successResponse => {
-    //       if (successResponse.data.code === 200) {
-    //         alert(successResponse.data.message);
-    //         var data = successResponse.data.data;
-    //         this.reload();
-    //        this.$router.push({path: '/store', query: {booksList: data}});
-    //       }else {
-    //         alert(successResponse.data.message);
-    //       }
-    //     })
-    //     .catch(failResponse => {
-    //       alert("失败！");
-    //     })
-    // },
-    //
-    // storeInfoSetting() {
-    //   this.$axios
-    //     .post('/store/info', {
-    //       phone: this.$session.get("key"),
-    //     })
-    //     .then(successResponse => {
-    //       if (successResponse.data.code === 200) {
-    //         if((successResponse.data.message === "普通用户")) {
-    //           alert('无权限！');
-    //         }else {
-    //           var data = successResponse.data.data;
-    //           this.$router.push({path: '/StoreInfo'});
-    //           //, query: {storeInfo: data}
-    //         }
-    //       }else {
-    //         alert("查看失败，请重试！");
-    //       }
-    //     })
-    //     .catch(failResponse => {
-    //       alert('失败！');
-    //     })
-    // },
-    //
-    // assistantNoPass() {
-    //   this.$axios  // 获取待审核的助理列表
-    //     .post('/store/all_assistant_application', {
-    //       phone: this.$session.get("key"), // 当前用户
-    //     })
-    //     .then(successResponse => {
-    //       if (successResponse.data.code === 200) {
-    //         if((successResponse.data.message === "普通用户") || (successResponse.data.message === "商家助理")) {
-    //           alert('无权限！');
-    //         }else {
-    //           var data = successResponse.data.data;
-    //           this.$router.push({path: '/assistantApply', query: {notPass: data}});
-    //         }
-    //       }else {
-    //         alert(successResponse.data.message);
-    //       }
-    //     })
-    //     .catch(failResponse => {
-    //       alert("失败！");
-    //     })
-    // },
-    //
+    personalInfoSetting() {
+      axios.post('/entity', {
+          id: this.$session.get("key"),
+        })
+        .then(successResponse => {
+          if (successResponse.data.code === 200) {
+            var data = successResponse.data.data;
+            this.$router.push({path: '/personalSetting', query: {personalInfo: data}});
+          }else {
+            alert(successResponse.data.message);
+          }
+        })
+        .catch(failResponse => {
+
+        })
+    },
+
+    storeManage() {
+      axios.post('/store/allbooks', {
+          phone: this.$cookies.get("userId"), // 当前用户
+        })
+        .then(successResponse => {
+
+            alert(successResponse.data.message);
+            var data = successResponse.data.data;
+            this.reload();
+           this.$router.push({path: '/store', query: {booksList: data}});
+
+        })
+        .catch(failResponse => {
+
+        })
+    },
+
+    storeInfoSetting() {
+      this.$axios.post('/store/info', {
+          // phone: this.$session.get("userId"),
+        })
+        .then(successResponse => {
+          if (successResponse.data.status ==='success' ) {
+            if((successResponse.data.message === "普通用户")) {
+              alert('无权限！');
+            }else {
+              var data = successResponse.data.data;
+              this.$router.push({path: '/StoreInfo'});
+              //, query: {storeInfo: data}
+            }
+          }else {
+            alert("查看失败，请重试！");
+          }
+        })
+    },
+
+    assistantNoPass() {
+      this.$axios  // 获取待审核的助理列表
+        .post('/store/all_assistant_application', {
+          phone: this.$session.get("key"), // 当前用户
+        })
+        .then(successResponse => {
+          if (successResponse.data.code === 200) {
+            if((successResponse.data.message === "普通用户") || (successResponse.data.message === "商家助理")) {
+              alert('无权限！');
+            }else {
+              var data = successResponse.data.data;
+              this.$router.push({path: '/assistantApply', query: {notPass: data}});
+            }
+          }else {
+            alert(successResponse.data.message);
+          }
+        })
+        .catch(failResponse => {
+
+        })
+    },
+
      moreInfo(id) {
-    //   this.$axios // 书籍详情
-    //     .post('/book/info', {
-    //       id: id, // 查询书籍
-    //     })
-    //     .then(successResponse => {
-    //       if (successResponse.data.code === 200) {
-    //         this.bookInfo = successResponse.data.data;
+      this.$axios // 书籍详情
+        .post('/book/info', {
+          id: id, // 查询书籍
+        })
+        .then(successResponse => {
+          if (successResponse.data.code === 200) {
+            this.bookInfo = successResponse.data.data;
            this.bookDialog = true;
-    //       }else {
-    //         alert(successResponse.data.message);
-    //       }
-    //     })
-    //     .catch(failResponse => {
-    //       alert("失败！");
-    //     })
+          }else {
+            alert(successResponse.data.message);
+          }
+        })
+
      },
-    //
-    // updateBook(id) {
-    //   this.$axios
-    //     .post('book/update', {
-    //       id: id,
-    //       name: this.bookInfo.name,
-    //       author: this.bookInfo.author,
-    //       publishingHouse: this.bookInfo.publishingHouse,
-    //       publishingDate: this.bookInfo.publishingDate,
-    //       price: this.bookInfo.price,
-    //       category: this.bookInfo.category,
-    //       introduction: this.bookInfo.introduction,
-    //     })
-    //     .then(successResponse => {
-    //       if (successResponse.data.code === 200) {
-    //         alert(successResponse.data.message);
-    //         var data = successResponse.data.data;
-    //         this.reload();
-    //         this.$router.push({path: '/myshop'});//, query: {booksList: data}
-    //         this.bookDialog = false;
-    //       }
-    //     })
-    //     .catch(failResponse => {
-    //       alert('失败！');
-    //     })
-    // },
-    //
-    // deleteBook(id) {
-    //   this.$axios
-    //     .post('/book/delete', {
-    //       id: id, // 删除书籍编号
-    //     })
-    //     .then(successResponse => {
-    //       if (successResponse.data.code === 200) {
-    //         alert(successResponse.data.message);
-    //         var data = successResponse.data.data;
-    //         this.reload();
-    //         this.$router.push({path: '/store', query: {booksList: data}});
-    //       }else {
-    //         alert(successResponse.data.message);
-    //       }
-    //     })
-    //     .catch(failResponse => {
-    //       alert("失败！");
-    //     })
-    // },
-    //
-    orderMoreInfo(id) {
-      // this.$axios // 订单详情
-      //   .post('order/info', {
-      //     phone: this.$session.get("key"), // 当前用户
-      //     id: id, // 查询订单编号
-      //   })
-      //   .then(successResponse => {
-      //     if (successResponse.data.code === 200) {
-      //       this.orderInfo = successResponse.data.data;
+
+    updateBook(id) {
+      this.$axios
+        .post('book/update', {
+          id: id,
+          name: this.bookInfo.name,
+          author: this.bookInfo.author,
+          publishingHouse: this.bookInfo.publishingHouse,
+          publishingDate: this.bookInfo.publishingDate,
+          price: this.bookInfo.price,
+          category: this.bookInfo.category,
+          introduction: this.bookInfo.introduction,
+        })
+        .then(successResponse => {
+          if (successResponse.data.code === 200) {
+            alert(successResponse.data.message);
+            var data = successResponse.data.data;
+            this.reload();
+            this.$router.push({path: '/myshop'});//, query: {booksList: data}
+            this.bookDialog = false;
+          }
+        })
+
+    },
+
+    deleteBook(id) {
+      this.$axios
+        .post('/book/delete', {
+          id: id, // 删除书籍编号
+        })
+        .then(successResponse => {
+          if (successResponse.data.code === 200) {
+            alert(successResponse.data.message);
+            var data = successResponse.data.data;
+            this.reload();
+            this.$router.push({path: '/store', query: {booksList: data}});
+          }else {
+            alert(successResponse.data.message);
+          }
+        })
+
+    },
+
+    orderMoreInfo(id) {// 订单详情
+      axios.get('/api/order/detail/'+id, {
+        orderId: id})
+        .then(successResponse => {
+            this.orderInfo = successResponse.data.data;
              this.orderDialog = true;
-      //     }else {
-      //       alert(successResponse.data.message);
-      //     }
-      //   })
-      //   .catch(failResponse => {
-      //     alert("失败！");
-      //   })
+        })
+        .catch(failResponse => {
+
+        })
+    },
+
+    sendBook(id) {
+      this.$axios
+        .post('/order/send', {
+          id: id, // 订单编号
+        })
+        .then(successResponse => {
+          if (successResponse.data.code === 200) {
+            alert(successResponse.data.message); // 已发货
+            var data = successResponse.data.data; // 重新加载订单
+            this.reload();
+            this.orderList = data;
+          }
+        })
+        .catch(failResponse => {
+
+        })
     }
-    //
-    // sendBook(id) {
-    //   this.$axios
-    //     .post('/order/send', {
-    //       id: id, // 订单编号
-    //     })
-    //     .then(successResponse => {
-    //       if (successResponse.data.code === 200) {
-    //         alert(successResponse.data.message); // 已发货
-    //         var data = successResponse.data.data; // 重新加载订单
-    //         this.reload();
-    //         this.orderList = data;
-    //       }
-    //     })
-    //     .catch(failResponse => {
-    //       alert('失败！');
-    //     })
-    // }
   },
 
-  // mounted() {
-  //   this.booksList = this.$route.query.booksList;
-  // }
+  mounted() {
+    this.booksList = this.$route.query.booksList;
+  }
 }
 </script>
 

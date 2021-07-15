@@ -115,9 +115,16 @@
         methods: {
             handleCurrentChange: function(currentPage) {
               this.currentPage = currentPage
-              axios.get('/api/book/list', this.currentPage).then(res => {
-                this.Books[this.showCategoryIndex] = res.data.result.list
-                this.reload();
+              axios.get('/api/book/list').then(res => {
+                let data=res.data.result;
+                this.MAXlength=data.total/50;
+                this.Books[0] = res.data.result.list; //获取数据
+                console.log("success");
+                console.log(this.Books[0]);
+                console.log(this.MAXlength);
+                console.log(res.data.result)
+                console.log(this.navItems.length)
+               // this.reload();
               })
             },
             //第三步：用于存放页面函数
@@ -164,7 +171,7 @@
                     })
                     .then(() => {
                       axios.post('/api/order/', {
-                        userid: this.$cookies.get('user_ID'),
+                        userid: this.$cookies.get('userId'),
                         storeId: e.storeId,//书籍ID
                         bookId: e.bookId,
                         imageUrl: e.imageUrl,

@@ -29,7 +29,7 @@
                     </div>
                     <div style="display: flex; margin-top: 40px;">
                         <el-button class="buyButton1" @click="addToCart(bookInfo)">加入购物车</el-button>
-                        <el-button class="buyButton2" style="margin-left: 30px;" @click="toSettle(bookInfo)">立即购买</el-button>
+<!--                      -->
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@ export default {
       // eslint-disable-next-line eqeqeq
       if (this.$cookies.get('status') == 'logined') {
         axios.post('/api/order/', {
-          userid: this.$cookies.get('user_ID'),
+          userId: this.$cookies.get('userId'),
           storeId: e.storeId,//书籍ID
           bookId: e.bookId,
           imageUrl: e.imageUrl,
@@ -84,7 +84,7 @@ export default {
         }).then(res => {
           console.log('success')
           console.log({
-            userid: this.$cookies.get('user_ID'),
+            userId: this.$cookies.get('userId'),
             storeId: e.storeId,//书籍ID
             bookId: e.bookId,
             imageUrl: e.imageUrl,
@@ -109,25 +109,21 @@ export default {
         })
       }
     },
-    setCart () {
-      this.cart[0]['user_ID'] = this.$cookies.get('user_ID')
-      this.cart[0]['book_ID'] = this.bookInfo.ID
-      this.cart[0]['book_Name'] = this.bookInfo.Name
-      this.cart[0]['book_Img'] = this.bookInfo.img
-      this.cart[0]['unit_Price'] = this.bookInfo.Price
-      this.cart[0]['count'] = this.num
+    setCart (e) {
+      this.cart[0]['userID'] = this.$cookies.get('userId')
+      this.cart[0]['bookID'] = this.bookInfo.bookId
+      this.cart[0]['bookName'] = this.bookInfo.name
+      this.cart[0]['imageUrl'] = this.bookInfo.imageUrl
+      this.cart[0]['price'] = this.bookInfo.price
+      this.cart[0]['orderMount'] = this.num
     },
-    toSettle () {
+    toSettle (e) {
       // eslint-disable-next-line eqeqeq
       if (this.$cookies.get('status') == 'logined') {
-        this.setCart()
-
-        this.$router.push({
-          path: '/shopping/settle',
-          query: {
-            cart: this.cart
-          }
-        })
+        this.setCart(e);
+        console.log(this.cart);
+        this.$router.push({path: '/shopping/settle', query: {cart: this.cart}})
+        console.log(this.cart);
       } else {
         this.$confirm('您尚未登录！', 'smallFrog', {
           confirmButtonText: '去登陆',

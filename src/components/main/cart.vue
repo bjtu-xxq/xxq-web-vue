@@ -100,7 +100,7 @@
             }
         },
         created() {
-            var user_ID = this.$cookies.get('user_ID');
+            var userID = this.$cookies.get('userID');
             var count = 0;
             var totalPrice = 0;
             var status=0;
