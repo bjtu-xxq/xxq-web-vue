@@ -24,7 +24,7 @@ axios.defaults.withCredentials=true;
 
 router.beforeEach((to, from, next) => {
     document.title = to.meta.title + ' -  书城'
-    const role = VueCookies.get('user_ID');
+    const role = VueCookies.get('userID');
     if (to.meta.permission && !role && (to.path == '/shopping/cart' || to.path == '/shopping/settle' || to.path == '/shopping/pay' || to.path == '/order' || to.path == '/setting')) {
         next('/403');
     } else {

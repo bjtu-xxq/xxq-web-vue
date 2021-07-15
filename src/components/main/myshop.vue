@@ -4,14 +4,9 @@
       <el-menu :default-active="$route.path" class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
 
         <el-menu-item index="/myshop" @click="storeManage()">店铺管理</el-menu-item>
-        <el-menu-item @click="storeInfoDialog= true">店铺信息</el-menu-item>
+        <el-menu-item @click="openstoreInfo()">店铺信息</el-menu-item>
 <!--        storeInfoSetting()-->
         <el-menu-item  @click="addStoreDialog = true">店铺申请</el-menu-item>
-        <el-menu-item @click="assistantNoPass()">申请通知</el-menu-item>
-
-        <el-submenu index="5">
-          <template slot="title">我的店铺</template>
-        </el-submenu>
       </el-menu>
     </div>
     <div style="margin-top: 2px">
@@ -63,24 +58,9 @@
                         <el-form-item label="作者姓名">
                           <el-input v-model="bookInfo.author" autocomplete="off" style="width: 450px"></el-input>
                         </el-form-item>
-
-                        <el-form-item label="出版社名">
-                          <el-input v-model="bookInfo.publishingHouse" autocomplete="off" style="width: 450px"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="出版日期">
-                          <el-date-picker
-                            value-format="yyyy-MM-dd"
-                            v-model="bookInfo.publishingDate"
-                            type="date"
-                            style="width: 450px">
-                          </el-date-picker>
-                        </el-form-item>
-
                         <el-form-item label="书籍单价">
                           <el-input v-model="bookInfo.price" autocomplete="off" style="width: 450px"></el-input>
                         </el-form-item>
-
                         <el-form-item label="书籍类别">
                           <el-select v-model="bookInfo.category" style="width: 450px">
                             <el-option
@@ -120,25 +100,25 @@
             <el-table-column
               prop="name"
               width="300">
-              <template slot-scope="scope">{{ orderList.name }}</template>
+              <template slot-scope="scope">{{ scope.row.name }}</template>
             </el-table-column>
 
             <el-table-column prop="price" label="单价" width="80">
-              <template slot-scope="scope">{{ orderList.price }}</template>
+              <template slot-scope="scope">{{ scope.row.price }}</template>
             </el-table-column>
 
             <el-table-column prop="user" label="用户" width="200">
-              <template slot-scope="scope">{{ orderList.username }}</template>
+              <template slot-scope="scope">{{ scope.row.username }}</template>
             </el-table-column>
 
             <el-table-column prop="number" label="数量" show-overflow-tooltip>
               <template slot-scope="scope">
-                <el-input-number v-model="num" size="small" :min="1" :disabled="true">{{orderList.number }}</el-input-number>
+                <el-input-number v-model="num" size="small" :min="1" :disabled="true">{{scope.row.number }}</el-input-number>
               </template>
             </el-table-column>
 
             <el-table-column prop="total" label="金额" width="120">
-              <template slot-scope="scope">{{ orderList.totalPrice }}</template>
+              <template slot-scope="scope">{{ scope.row.totalPrice }}</template>
             </el-table-column>
 
             <el-table-column
@@ -168,7 +148,7 @@
             <el-input v-model="storeApply.phone" autocomplete="off" style="width: 500px"></el-input>
           </el-form-item>
           <el-form-item label="店铺地址" >
-            <el-input v-model="storeApply.address" autocomplete="off" style="width: 500px"></el-input>
+            <el-input v-model="storeApply.position" autocomplete="off" style="width: 500px"></el-input>
           </el-form-item>
           <el-form-item label="店铺简介" >
             <el-input v-model="storeApply.introduction" type="textarea" :rows="5" autocomplete="off" style="width: 500px"></el-input>
@@ -204,20 +184,6 @@
               <el-form-item label="作者姓名">
                 <el-input v-model="newBookInfo.author" autocomplete="off" style="width: 450px" placeholder="请输入作者姓名"></el-input>
               </el-form-item>
-
-              <el-form-item label="出版社名">
-                <el-input v-model="newBookInfo.publishHouse" autocomplete="off" style="width: 450px" placeholder="请输入出版社名"></el-input>
-              </el-form-item>
-
-              <el-form-item label="出版日期">
-                <el-date-picker
-                  v-model="newBookInfo.publishDate"
-                  type="date"
-                  style="width: 450px"
-                  placeholder="请选择出版日期日期">
-                </el-date-picker>
-              </el-form-item>
-
               <el-form-item label="书籍单价">
                 <el-input v-model="newBookInfo.price" autocomplete="off" style="width: 450px" placeholder="请输入书籍单价"></el-input>
               </el-form-item>
@@ -232,12 +198,7 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-
-              <el-form-item label="书籍简介">
-                <el-input v-model="newBookInfo.introduction" autocomplete="off" type="textarea" :rows="6" style="width: 450px" placeholder="请输入书籍简介"></el-input>
-              </el-form-item>
             </el-form>
-
             <div slot="footer" class="dialog-footer">
               <el-button type="primary" style="width: 30%" @click="save()">确 定</el-button>
               <el-button style="width: 30%; margin-left: 20%" @click="newBookDialog = false">取 消</el-button>
@@ -260,7 +221,7 @@
                 </el-form-item>
 
                 <el-form-item label="店铺地址">
-                  <el-input v-model="storeInfo.address" style="width: 600px; margin-right: 45%"></el-input>
+                  <el-input v-model="storeInfo.position" style="width: 600px; margin-right: 45%"></el-input>
                 </el-form-item>
 
                 <el-form-item label="店铺简介">
@@ -347,18 +308,13 @@ export default {
       value: '',
       labelPosition: 'left',
       dialogImageUrl: '',
-
+      storeId: '',
       addStoreDialog: false,
       newBookDialog: false,
       bookDialog: false,
       orderDialog: false,
       storeInfoDialog: false,
-      booksList: [
-        {  picture:'1',
-        name:'1',
-        category:'1',
-        author:'1',
-        price:'1',}],
+      booksList: [],
 
       bookInfo: {
         id: '',
@@ -439,44 +395,62 @@ export default {
       storeInfo: [],
       options: [
         {
-          value: '文学小说',
-          label: '文学小说'
+          value: '1',
+          label: '哲学宗教类'
         },
 
         {
-          value: '人文社科',
-          label: '人文社科',
+          value: '2',
+          label: '科学类',
         },
 
         {
-          value: '经管励志',
-          label: '经管励志'
+          value: '3',
+          label: '政治法律类'
         },
 
         {
-          value: '少儿童书',
-          label: '少儿童书'
+          value: '4',
+          label: '军事类'
         },
 
         {
-          value: '教辅考试',
-          label: '教辅考试'
+          value: '5',
+          label: '文化教育体育类'
         },
 
         {
-          value: '科学技术',
-          label: '科学技术'
+          value: '6',
+          label: '历史类'
         },
 
         {
-          value: '生活娱乐',
-          label: '生活娱乐'
+          value: '7',
+          label: '医学卫生类'
         },
 
         {
-          value: '艺术珍享',
-          label: '艺术珍享'
-        }],
+          value: '8',
+          label: '数学类'
+        },
+        {
+          value: '9',
+          label: '物理类'
+        },
+        {
+          value: '10',
+          label: '计算机类'
+        },
+        {
+          value: '11',
+          label: '小说类'
+        },
+        {
+          value: '12',
+          label: '漫画类'
+        }
+
+        ],
     }
   },
 
@@ -484,11 +458,13 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
+
     addstore(e){
       axios.post('/api/store/',{
             name:e.storeName,
             phone:e.phone,
-            postion:e.address
+            position:e.address,
+        introduction:e.introduction
       }).then(res =>{
         console.log(e)
         console.log(res.data)
@@ -498,24 +474,26 @@ export default {
           this.addStoreDialog = false
         }
         else{
-          this.$message({showClose:false,message:'申请失败',type: 'success', center: true});
+          this.$message({showClose:false,message:res.data.msg,type: 'error', center: true});
           this.addStoreDialog = false
         }
       })
     },
-    handleClick(tab, event) {
+
+  handleClick(tab, event) {
       if(this.activeName === 'first') {
         this.storeManage();
       }else {
         alert("结果加载中，请稍候...");// 获取已支付和已发货的订单
-       axios.post('/order/'+this.$cookies.id,this.$cookies)
+       axios.post('/api/order/'+this.$cookies.storeid+'list')
           .then(successResponse => {
-            if (successResponse.data.code === 200) {
+            if(successResponse.data.status=='success'){
+              console.log(successResponse.data)
+              this.$message({showClose:false ,message:successResponse.data.msg,type:'success',center:true});
               var data = successResponse.data.data;
               this.orderList = data;
-            }else {
-              alert(successResponse.data.message);
             }
+            this.$message({showClose:false ,message:successResponse.data.msg,type:'error',center:true})
           })
 
       }
@@ -523,39 +501,58 @@ export default {
     handleDelete(index, row) {
       console.log(index, row);
     },
+    openstoreInfo(){
+      axios.get('/api/store/manager/').then(res =>{
+        console.log(res.data)
+        this.storeInfo=res.data.result
+        this.storeInfoDialog= true
+        if (res.data.status=='success'){
+          this.storeId=res.data.result.storeId;
+        }
+      })
+    },
     infoUpdate() {
-      axios.put('/api/store/', {
+      // axios.get('/api/store/id/').then(res =>{
+      //   console.log(res.data)
+      //   if(res.data.status=='success')
+      //     this.storeId=res.data.result;
+      // }).then(
+        axios.put('/api/store', {
           phone: this.storeInfo.phone,
-        storeId: this.storeInfo.id,
+          storeId:  this.storeId,
           name: this.storeInfo.name,
-          postion: this.storeInfo.address,
+          position: this.storeInfo.position,
           introduction: this.storeInfo.introduction,
-        })
-        .then(successResponse => {
-          console.log(successResponse.data)
-          if (successResponse.data.status=== 'success') {
-            alert("修改成功！");
-            var data = successResponse.data.data;
-            this.$router.push({path: '/myshop'});
-            //, query: {storeInfo: data}
-          }
-          else{
-            this.$message({showClose:false,message:successResponse.data.msg,type:'error',center:true});
-          }
-          this.addStoreDialog=false;
-        })
-        .catch(failResponse => {
-        })
+        }).then(successResponse => {
+            console.log(successResponse.data)
+            if (successResponse.data.status=== 'success') {
+              alert("修改成功！");
+              this.addStoreDialog=false;
+              var data = successResponse.data.data;
+              this.$router.push({path: '/myshop'});
+              //, query: {storeInfo: data}
+            }
+            else{
+              this.$message({showClose:false,message:successResponse.data.msg,type:'error',center:true});
+            }
+            this.addStoreDialog=false;
+          })
+          .catch(failResponse => {
+          })
+
     },
     save(){
       axios.post('/api/book/',{
-        Book:this.newBookInfo
+        name:this.newBookInfo.name,
+        author:this.newBookInfo.author,
+        cateId:this.newBookInfo.category,
+        price:this.newBookInfo.price,
       }).then(res=>{
         console.log(this.newBookInfo)
         console.log(res.data)
-        if(res.data.status='error')
+        if(res.data.status=='error')
         {
-          this.$message({showClose: false, message: res.data.msg, type: 'success', center: true});
+          this.$message({showClose: false, message: res.data.msg, type: 'error', center: true});
         }
         else{
           this.$message({showClose: false, message: "添加成功", type: 'success', center: true});
@@ -589,67 +586,46 @@ export default {
           }
         })
         .catch(failResponse => {
-
         })
     },
-
     storeManage() {
-      axios.post('/store/allbooks', {
-          phone: this.$cookies.get("userId"), // 当前用户
-        })
-        .then(successResponse => {
-
-            alert(successResponse.data.message);
-            var data = successResponse.data.data;
-            this.reload();
-           this.$router.push({path: '/store', query: {booksList: data}});
-
-        })
-        .catch(failResponse => {
-
-        })
+      axios.get('/api/store/id/').then(res =>{
+       console.log(res.data)
+        if (res.data.status === 'success'){
+           this.storeId=res.data.result;
+        }
+        console.log(this.storeId)
+      }).then(
+      axios.get('/api/book/store/'+this.storeId+'/list/', {
+          storeId:this.storeId
+        }).then(successResponse => {
+          console.log(successResponse)
+            let data = successResponse.data.result;
+           this.$router.push({path: '/myshop', query: {booksList: data}});
+        }).catch(failResponse => {}))
     },
-
-    storeInfoSetting() {
-      axios.put('/api/store/', {
-          // phone: this.$session.get("userId"),
-        })
-        .then(successResponse => {
-          // if (successResponse.data.status ==='success' ) {
-          //   if((successResponse.data.message === "普通用户")) {
-          //     alert('无权限！');
-          //   }else {
-              var data = successResponse.data.data;
-              this.$router.push({path: '/StoreInfo'});
-              //, query: {storeInfo: data}
-        //     }
-        //   }else {
-        //     alert("查看失败，请重试！");
-        //   }
-         })
-    },
-
-    assistantNoPass() {
-      this.$axios  // 获取待审核的助理列表
-        .post('/store/all_assistant_application', {
-          phone: this.$session.get("key"), // 当前用户
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            if((successResponse.data.message === "普通用户") || (successResponse.data.message === "商家助理")) {
-              alert('无权限！');
-            }else {
-              var data = successResponse.data.data;
-              this.$router.push({path: '/assistantApply', query: {notPass: data}});
-            }
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-
-        })
-    },
+    //
+    // assistantNoPass() {
+    //   this.$axios  // 获取待审核的助理列表
+    //     .post('/store/all_assistant_application', {
+    //       phone: this.$session.get("key"), // 当前用户
+    //     })
+    //     .then(successResponse => {
+    //       if (successResponse.data.code === 200) {
+    //         if((successResponse.data.message === "普通用户") || (successResponse.data.message === "商家助理")) {
+    //           alert('无权限！');
+    //         }else {
+    //           var data = successResponse.data.data;
+    //           this.$router.push({path: '/assistantApply', query: {notPass: data}});
+    //         }
+    //       }else {
+    //         alert(successResponse.data.message);
+    //       }
+    //     })
+    //     .catch(failResponse => {
+    //
+    //     })
+    // },
 
      moreInfo(id) {
       this.$axios // 书籍详情
