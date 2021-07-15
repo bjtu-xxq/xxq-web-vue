@@ -48,9 +48,8 @@ export default {
         created() {
              axios.get('/api/book/top20/').then(res => {
 //这里是ES6的写法，get请求的地址
-               console.log(res.data);
+               console.log(res);
                this.recBooks = res.data.result.list;
-                console.log("success");
                 this.transRec();
         })},
         mounted() {
