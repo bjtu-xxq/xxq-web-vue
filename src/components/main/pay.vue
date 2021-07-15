@@ -9,9 +9,7 @@
         <el-divider></el-divider>
 
         <el-row type="flex" align="middle">
-          <el-col :span="4">
-            <el-button icon="el-icon-caret-left" class="back" @click="goBack()">上一步</el-button>
-          </el-col>
+
           <el-col :span="20">
             <el-steps :active="2" finish-status="success" simple>
               <el-step title="购物车" icon="el-icon-s-goods" @click="toCart()"></el-step>
@@ -22,8 +20,7 @@
           </el-col>
         </el-row>
 
-        <el-divider></el-divider>
-
+        <img class="bookImg" src="../../../static/pay.png">
 
       </div>
     </div>
@@ -91,6 +88,12 @@ export default {
         if(res.data.status='success')
              {
                console.log(res)
+               this.$message({
+                 showClose: true,
+                 message: '支付成功！',
+                 type: 'success',
+                 center: true
+               })
                this.$router.push({
                  path: '/shopping/successpay'
              })}})
@@ -207,8 +210,9 @@ export default {
   font-weight: bold;
 }
 
-.pay .viewBox .commodity .bookImg {
+bookImg {
   width: 60px;
+  height: 60px;
 }
 
 .pay .viewBox .orderInfo {

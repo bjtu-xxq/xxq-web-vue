@@ -22,7 +22,7 @@
                 <el-card class="leftNav">
                     <img src="../../../static/cateNav.png" class="leftImg" />
                     <div class="navItem" :class="index === showCategoryIndex ? 'cur' : ''"
-                      v-for="(item, index) in navItems" :key="index" @click="showCategory(index)">{{item.name}}
+                      v-for="(item, index) in navItems" :key="index" @click="showCategory(index)"> {{item.name}}
                     </div>
                     <div class="navItem" @click="toTop()"><i class="el-icon-arrow-up" style="font-size: 23px;"></i></div>
                 </el-card>
@@ -85,12 +85,11 @@
         window.addEventListener('scroll', this.handleScroll);
       },
         created() {
-          axios.get('/api/category/list').then(res =>{
+          axios.get('/api/category/list/').then(res =>{
             this.navItems=res.data.result.list;
             console.log(this.navItems);
           })
-          axios.get('/api/book/list/'+this.currentPage,
-            {page:this.currentPage}).then(res => {
+          axios.get('/api/book/list/').then(res => {
               let data=res.data.result;
              this.MAXlength=data.total/50;
             console.log(this.currentPage)
@@ -98,8 +97,7 @@
             console.log("success");
             console.log(this.Books[this.showCategoryIndex]);
             console.log(this.showCategoryIndex)
-            console.log(res.data.result)
-            console.log(this.navItems.length)
+
             this.reload();
           })
           // axios.get('/api/book/list').then(res => {
