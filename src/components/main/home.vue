@@ -14,15 +14,15 @@
         </el-container>
 
         <div class="recommend">
-            <h1 class="recommendTitle">为您推荐</h1>
+            <h1 class="recommendTitle">为您推荐Top20</h1>
             <div class="recLine" data-wow-duration="2s" v-for="(books, index) in transRecBooks" :key="index">
                 <div v-for="(book, index) in books" :key="index">
                     <el-card slot="reference" class="wow slideInUp card" :body-style="{ padding: '0px' }">
-                        <img class="img" @click="toInfo(book)" src="static/left2.jpg">
+                        <img class="img" @click="toInfo(book)" :src="book.imageUrl">
                       <div class="mask">
                             <el-link class="name" @click="toInfo(book)" :underline="false">
                                 <i class="el-icon-reading readIcon"></i>
-                                {{ book.Name }}
+                                {{ book.name}}
                             </el-link>
                             <el-rate class="rate" v-model="book.Commend" :colors="colors" disabled></el-rate>
                         </div>
@@ -35,8 +35,8 @@
 
 <script>
 import axios from "axios";
-// import animate from 'animate.css'
-// import {WOW} from 'wowjs';
+import animate from 'animate.css'
+import {WOW} from 'wowjs';
 
 export default {
   data() {
@@ -46,29 +46,27 @@ export default {
             }
         },
         created() {
-            // var address = "recommend";
-            //
-            // axios.post(address).then(res => {
+             axios.get('/api/book/top20/').then(res => {
 //这里是ES6的写法，get请求的地址
-                this.recBooks = [{"ID":"1","Name":"活着","Author":"余华","Language":"1","Category":"3","Commend":"4.4","Price":"20","img":"jpg"}]
+               console.log(res.data);
+               this.recBooks = res.data.result.list;
                 console.log("success");
-                console.log(this.recBooks);
                 this.transRec();
+        })},
+        mounted() {
+    	在项目加载完成之后初始化wow
+            var options={
+                //默认为true
+                live:false
+            };
+            var wow=new WOW(options);
         },
-        // mounted() {
-    	// // 在项目加载完成之后初始化wow
-        //     var options={
-        //         //默认为true
-        //         live:false
-        //     };
-        //     var wow=new WOW(options);
-        // },
         methods: {
             transRec() {
                 var Arr = [];
                 for (var i = 0, idx = -1; i < this.recBooks.length; i++) {
                     i % 4 == 0 && idx++;
-                    if (Object.prototype.toString.call(Arr[idx]) != "[object Array]")
+                    if (Object.prototype.toString.call(Arr[idx]) !== "[object Array]")
                         Arr[idx] = [];
                     Arr[idx].push(this.recBooks[i]);
                 }
