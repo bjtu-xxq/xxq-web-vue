@@ -188,6 +188,7 @@ export default {
   },
   creat(){
     this.orderManage();
+    this.reload();
   },
   methods: {
 
@@ -202,7 +203,6 @@ export default {
           console.log(successResponse.data)
           })
           .catch(failResponse => {
-            alert("失败！");
           })
       }else if(this.activeName === 'third') {
         // 获取已发货的订单

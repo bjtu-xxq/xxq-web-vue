@@ -16,34 +16,29 @@
             <div>
               <el-table :data="booksList" style="width: 100%" height="70%">
                 <el-table-column  label="商品" width="100">
-                  <template slot-scope="scope">
-                    <img :src="scope.row.imageUrl" class="cover">
-                  </template>
+                  <template slot-scope="scope"><img :src="scope.row.imageUrl" class="cover"></template>
+                </el-table-column>
+                <el-table-column  label="名称" width="400">
+                  <template slot-scope="scope">{{ scope.row.name }}</template>
                 </el-table-column>
 
-                <el-table-column prop="name" width="400">
-<!--                  <template slot-scope="scope">{{ scope.row.name }}</template>-->
+                <el-table-column label="类别" width="120">
+                  <template slot-scope="scope">{{ scope.row.cateId }}</template>
                 </el-table-column>
 
-                <el-table-column prop="cateId" label="类别" width="120">
-<!--                  <template slot-scope="scope">{{ scope.row.cateId }}</template>-->
+                <el-table-column  label="作者" width="120">
+                  <template slot-scope="scope">{{ scope.row.author }}</template>
                 </el-table-column>
 
-                <el-table-column prop="author" label="作者" width="120">
-<!--                  <template slot-scope="scope">{{ scope.row.author }}</template>-->
+                <el-table-column label="单价" show-overflow-tooltip>
+                  <template slot-scope="scope">{{ scope.row.price }}</template>
                 </el-table-column>
-
-                <el-table-column prop="price" label="单价" show-overflow-tooltip>
-<!--                  <template slot-scope="scope">{{ scope.row.price }}</template>-->
-                </el-table-column>
-
                 <el-table-column prop="operation"><template slot-scope="scope">
-                    <el-button size="medium" type="primary" plain @click="moreInfo(booksList.bookId)">详情</el-button>
-                    <el-button style="margin-left: 10%" size="medium" type="danger" plain @click="deleteBook(booksList.bookId)">下架</el-button>
+                    <el-button size="medium" type="primary" plain @click="moreInfo(scope.row.bookId)">详情</el-button>
+                    <el-button style="margin-left: 10%" size="medium" type="danger" plain @click="deleteBook(scope.row.bookId)">下架</el-button>
                   </template>
                 </el-table-column>
               </el-table>
-
               <div>
                 <el-dialog title="书籍详情" :visible.sync="bookDialog" :model="bookInfo">
                   <el-card>
@@ -52,7 +47,6 @@
                         <el-form-item label="书籍名称">
                           <el-input v-model="bookInfo.name" autocomplete="off" style="width: 450px"></el-input>
                         </el-form-item>
-
                         <el-form-item label="作者姓名">
                           <el-input v-model="bookInfo.author" autocomplete="off" style="width: 450px"></el-input>
                         </el-form-item>
@@ -62,21 +56,13 @@
                         <el-form-item label="书籍类别">
                           <el-select v-model="bookInfo.category" style="width: 450px">
                             <el-option
-                              v-for="item in options"
-                              :key="item.value"
-                              :label="item.label"
-                              :value="item.value">
+                              v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                           </el-select>
                         </el-form-item>
-
-                        <el-form-item label="书籍简介">
-                          <el-input v-model="bookInfo.introduction" autocomplete="off" type="textarea" :rows="6" style="width: 450px"></el-input>
-                        </el-form-item>
                       </el-form>
-
                       <div slot="footer" class="dialog-footer">
-                        <el-button type="primary" style="width: 30%" @click="updateBook(bookInfo.id)">修 改</el-button>
+                        <el-button type="primary" style="width: 30%" @click="updateBook(bookInfo.bookId)">修 改</el-button>
                         <el-button style="width: 30%; margin-left: 20%" @click="bookDialog = false">取 消</el-button>
                       </div>
                     </div>
@@ -122,7 +108,7 @@
             <el-table-column
               prop="operation">
               <template slot-scope="scope">
-                <el-button size="medium" type="primary" plain @click="orderMoreInfo(orderList.id)">详情</el-button>
+                <el-button size="medium" type="primary" plain @click="orderMoreInfo(scope.row.bookId)">详情</el-button>
                     </template>
             </el-table-column>
           </el-table>
@@ -458,6 +444,7 @@ export default {
     },
     creat(){
       this.storeManage();
+
     },
 
     addstore(e){
@@ -485,17 +472,16 @@ export default {
         this.storeManage();
       }else {
         alert("结果加载中，请稍候...");// 获取已支付和已发货的订单
-       axios.post('/api/order/'+this.$cookies.storeid+'list')
+       axios.get('/api/order/store/list')
           .then(successResponse => {
+            console.log(successResponse.data)
             if(successResponse.data.status=='success'){
-              console.log(successResponse.data)
-              this.$message({showClose:false ,message:successResponse.data.msg,type:'success',center:true});
+
+              this.$message({showClose:false ,message:'打开成功',type:'success',center:true});
               var data = successResponse.data.data;
               this.orderList = data;
             }
-            this.$message({showClose:false ,message:successResponse.data.msg,type:'error',center:true})
           })
-
       }
     },
     handleDelete(index, row) {
@@ -561,18 +547,7 @@ export default {
       })
       this.newBookDialog = false
   },
-    // orderManage() {
-    //  axios.post('/order/userweizhifu', {
-    //       userId: this.$session.get("key"), // 当前用户
-    //     })
-    //     .then(successResponse => {
-    //         var data = successResponse.data.data;
-    //         this.$router.push({path: '/order', query: {unPayList: data}});
-    //     })
-    //     .catch(failResponse => {
-    //
-    //     })
-    // },
+
     personalInfoSetting() {
       axios.post('/entity', {
           id: this.$session.get("key"),
@@ -592,7 +567,8 @@ export default {
       axios.get('/api/book/store/list/').then(successResponse => {
           console.log(successResponse.data.result.list)
             let data = successResponse.data.result.list;
-          this.bookInfo=data;
+          //this.bookInfo=data;
+        this.reload();
            this.$router.push({path: '/myshop', query: {booksList: data}});
         }).catch(failResponse => {})
     },
@@ -603,6 +579,7 @@ export default {
           bookId: id, // 查询书籍
         })
         .then(successResponse => {
+          console.log(successResponse.data)
             this.bookInfo = successResponse.data.result;
            this.bookDialog = true;
         })
@@ -610,26 +587,19 @@ export default {
      },
 
     updateBook(id) {
-      this.$axios
-        .post('book/update', {
-          id: id,
+    axios.put('/api/book/info/'+id, {
+          bookId: id,
           name: this.bookInfo.name,
           author: this.bookInfo.author,
-          publishingHouse: this.bookInfo.publishingHouse,
-          publishingDate: this.bookInfo.publishingDate,
           price: this.bookInfo.price,
-          category: this.bookInfo.category,
-          introduction: this.bookInfo.introduction,
+          cateId:this.newBookInfo.category,
         })
         .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            alert(successResponse.data.message);
-            var data = successResponse.data.data;
-            this.reload();
-            this.$router.push({path: '/myshop'});//, query: {booksList: data}
+          console.log( successResponse.data)
+            var data = successResponse.data.result;
+            this.$router.push({path: '/myshop', query: {booksList: data}});
             this.bookDialog = false;
-          }
-        })
+          })
 
     },
 
@@ -645,9 +615,11 @@ export default {
     },
 
     orderMoreInfo(id) {// 订单详情
-      axios.get('/api/order/detail/'+id, {
+      console.log(id)
+      axios.get('/api/order/'+id, {
         orderId: id})
         .then(successResponse => {
+
             this.orderInfo = successResponse.data.data;
              this.orderDialog = true;
         })

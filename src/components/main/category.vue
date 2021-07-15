@@ -122,17 +122,20 @@
             handleCurrentChange: function(currentPage) {
               this.currentPage = currentPage
                 //this.reload();
-              axios.get('/api/book/list/'+this.currentPage,
-                {page:this.currentPage}).then(res => {
-                //  let data=res.data.result;
-                // this.MAXlength=data.total/50;
-                console.log(this.currentPage)
-                this.Books[this.showCategoryIndex] = res.data.result.list; //获取数据
-                console.log("success");
-                console.log(this.Books[this.showCategoryIndex]);
-                console.log(res.data.result)
-              })
+                init(currentPage)
             },
+          init(e){
+            axios.get('/api/book/list/'+e,
+              {page:e}).then(res => {
+              //  let data=res.data.result;
+              // this.MAXlength=data.total/50;
+              console.log(e)
+              this.Books[this.showCategoryIndex] = res.data.result.list; //获取数据
+              console.log("success");
+              console.log(this.Books[this.showCategoryIndex]);
+              console.log(res.data.result)
+            })
+          },
             //第三步：用于存放页面函数
             handleScroll() {
                this.scroll = $(window).height() + $(document).scrollTop()//可见高以及获取垂直滚动的距离  即当前滚动的地方的窗口顶端到整个页面顶端的距离
