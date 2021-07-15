@@ -4,7 +4,8 @@
       <el-menu :default-active="$route.path" class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
 
         <el-menu-item index="/myshop" @click="storeManage()">店铺管理</el-menu-item>
-        <el-menu-item @click="storeInfoSetting()">店铺信息</el-menu-item>
+        <el-menu-item @click="storeInfoDialog= true">店铺信息</el-menu-item>
+<!--        storeInfoSetting()-->
         <el-menu-item  @click="addStoreDialog = true">店铺申请</el-menu-item>
         <el-menu-item @click="assistantNoPass()">申请通知</el-menu-item>
 
@@ -163,13 +164,12 @@
           <el-form-item label="店铺名称" >
             <el-input v-model="storeApply.storeName" autocomplete="off" style="width: 500px"></el-input>
           </el-form-item>
-
           <el-form-item label="店铺简介" >
             <el-input v-model="storeApply.introduction" type="textarea" :rows="5" autocomplete="off" style="width: 500px"></el-input>
           </el-form-item>
         </el-form>
         <div>
-          <el-button style="width: 100px" type="primary" @click="addStoreDialog = false">申 请</el-button>
+          <el-button style="width: 100px" type="primary" @click="addstore(storeApply)">申 请</el-button>
           <el-button style="width: 100px; margin-left: 20%" @click="addStoreDialog = false">取 消</el-button>
         </div>
       </el-dialog>
@@ -240,7 +240,35 @@
         </el-card>
       </el-dialog>
     </div>
+      <div>
+        <el-dialog title="店铺详情":visible.sync="storeInfoDialog">
+          <el-card>
+            <div>
+              <el-form :label-position="labelPosition" label-width="80px" :model="storeInfo">
+                <el-form-item label="店铺名称">
+                  <el-input v-model="storeInfo.name" style="width: 600px; margin-right: 45%"></el-input>
+                </el-form-item>
 
+                <el-form-item label="联系方式">
+                  <el-input v-model="storeInfo.phone" style="width: 600px; margin-right: 45%"></el-input>
+                </el-form-item>
+
+                <el-form-item label="店铺地址">
+                  <el-input v-model="storeInfo.address" style="width: 600px; margin-right: 45%"></el-input>
+                </el-form-item>
+
+                <el-form-item label="店铺简介">
+                  <el-input v-model="storeInfo.introduction" type="textarea" :rows="5" style="width: 600px; margin-right: 45%"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-button type="success" plain style="width: 200px; margin-right: 10%" @click="infoUpdate()">确定修改</el-button>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-card>
+        </el-dialog>
+      </div>
     <div>
       <el-dialog title="订单详情" :visible.sync="orderDialog">
         <el-card>
@@ -318,7 +346,7 @@ export default {
       newBookDialog: false,
       bookDialog: false,
       orderDialog: false,
-
+      storeInfoDialog: false,
       booksList: [
         {  picture:'1',
         name:'1',
@@ -404,7 +432,7 @@ export default {
           introduction: '7'
         }
       },
-
+      storeInfo: [],
       options: [
         {
           value: '文学小说',
@@ -452,7 +480,22 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
-
+    addstore(e){
+      axios.post('/api/store/',{
+            store:e
+      }).then(res =>{
+        console.log(res.data)
+        if(res.data.status=='success'){
+          console.log(res.data)
+          this.$message({showClose:false,message:'申请成功',type: 'success', center: true});
+          this.addStoreDialog = false
+        }
+        else{
+          this.$message({showClose:false,message:'失败',type: 'error', center: true});
+          this.addStoreDialog = false
+        }
+      })
+    },
     handleClick(tab, event) {
       if(this.activeName === 'first') {
         this.storeManage();
@@ -472,6 +515,30 @@ export default {
     },
     handleDelete(index, row) {
       console.log(index, row);
+    },
+    infoUpdate() {
+      axios.put('/api/store/', {
+          phone: this.storeInfo.phone,
+        storeId: this.storeInfo.id,
+          name: this.storeInfo.name,
+          postion: this.storeInfo.address,
+          introduction: this.storeInfo.introduction,
+        })
+        .then(successResponse => {
+          console.log(successResponse.data)
+          if (successResponse.data.status=== 'success') {
+            alert("修改成功！");
+            var data = successResponse.data.data;
+            this.$router.push({path: '/myshop'});
+            //, query: {storeInfo: data}
+          }
+          else{
+            this.$message({showClose:false,message:successResponse.data.msg,type:'error',center:true});
+          }
+          this.addStoreDialog=false;
+        })
+        .catch(failResponse => {
+        })
     },
     save(){
       axios.post('/api/book/',{
@@ -537,22 +604,22 @@ export default {
     },
 
     storeInfoSetting() {
-      this.$axios.post('/store/info', {
+      axios.put('/api/store/', {
           // phone: this.$session.get("userId"),
         })
         .then(successResponse => {
-          if (successResponse.data.status ==='success' ) {
-            if((successResponse.data.message === "普通用户")) {
-              alert('无权限！');
-            }else {
+          // if (successResponse.data.status ==='success' ) {
+          //   if((successResponse.data.message === "普通用户")) {
+          //     alert('无权限！');
+          //   }else {
               var data = successResponse.data.data;
               this.$router.push({path: '/StoreInfo'});
               //, query: {storeInfo: data}
-            }
-          }else {
-            alert("查看失败，请重试！");
-          }
-        })
+        //     }
+        //   }else {
+        //     alert("查看失败，请重试！");
+        //   }
+         })
     },
 
     assistantNoPass() {

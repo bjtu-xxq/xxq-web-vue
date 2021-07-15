@@ -86,58 +86,6 @@
         console.log(tab, event);
       },
 
-      showMain() {
-        this.$axios
-          .post('/book/renwensheke', {
-            id: this.$session.get("key"),
-          })
-          .then(successResponse => {
-            if (successResponse.data.code === 200) {
-              var data = successResponse.data.data;
-              this.$router.push({path: '/main', query: {mainList: data}});
-            }
-          })
-          .catch(failResponse => {
-            alert("失败！");
-          })
-      },
-
-      shopCart() {
-        this.$axios
-          .post('/cart/all', {
-            id: this.$session.get("key"),
-          })
-          .then(successResponse => {
-            if (successResponse.data.code === 200) {
-              var data = successResponse.data.data;
-              this.$router.push({path: '/shopCart', query: {cartList: data}});
-            }else {
-              alert(successResponse.data.message);
-            }
-          })
-          .catch(failResponse => {
-            alert('失败！');
-          })
-      },
-
-      orderManage() {
-        this.$axios  // 获取未支付的订单
-          .post('/order/userweizhifu', {
-            userId: this.$session.get("key"), // 当前用户
-          })
-          .then(successResponse => {
-            if (successResponse.data.code === 200) {
-              var data = successResponse.data.data;
-              this.$router.push({path: '/order', query: {unPayList: data}});
-            }else {
-              alert(successResponse.data.message);
-            }
-          })
-          .catch(failResponse => {
-            alert("失败！");
-          })
-      },
-
       personalInfoSetting() {
         this.$axios
           .post('/entity', {
@@ -224,28 +172,28 @@
       },
 
       infoUpdate() {
-        // this.$axios
-        //   .post('/store/update', {
-        //     phone: this.storeInfo.phone,
-        //     id: this.storeInfo.id,
-        //     name: this.storeInfo.name,
-        //     address: this.storeInfo.address,
-        //     introduction: this.storeInfo.introduction,
-        //   })
-        //   .then(successResponse => {
-        //     if (successResponse.data.code === 200) {
-        //       alert("修改成功！");
-        //       var data = successResponse.data.data;
+        this.$axios
+          .post('/store/update', {
+            phone: this.storeInfo.phone,
+            id: this.storeInfo.id,
+            name: this.storeInfo.name,
+            address: this.storeInfo.address,
+            introduction: this.storeInfo.introduction,
+          })
+          .then(successResponse => {
+            if (successResponse.data.code === 200) {
+              alert("修改成功！");
+              var data = successResponse.data.data;
               this.$router.push({path: '/myshop'});
               //, query: {storeInfo: data}
-      //       }
-      //       else{
-      //         alert(successResponse.data.message);
-      //       }
-      //     })
-      //     .catch(failResponse => {
-      //       alert('失败！');
-      //     })
+            }
+            else{
+              alert(successResponse.data.message);
+            }
+          })
+          .catch(failResponse => {
+            alert('失败！');
+          })
        },
     },
 
