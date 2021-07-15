@@ -164,6 +164,12 @@
           <el-form-item label="店铺名称" >
             <el-input v-model="storeApply.storeName" autocomplete="off" style="width: 500px"></el-input>
           </el-form-item>
+          <el-form-item label="手机号码" >
+            <el-input v-model="storeApply.phone" autocomplete="off" style="width: 500px"></el-input>
+          </el-form-item>
+          <el-form-item label="店铺地址" >
+            <el-input v-model="storeApply.address" autocomplete="off" style="width: 500px"></el-input>
+          </el-form-item>
           <el-form-item label="店铺简介" >
             <el-input v-model="storeApply.introduction" type="textarea" :rows="5" autocomplete="off" style="width: 500px"></el-input>
           </el-form-item>
@@ -367,8 +373,6 @@ export default {
       },
 
       storeApply: {
-        storeName: '1',
-        introduction: '1',
       },
 
       newBookInfo: {
@@ -482,8 +486,11 @@ export default {
     },
     addstore(e){
       axios.post('/api/store/',{
-            store:e
+            name:e.storeName,
+            phone:e.phone,
+            postion:e.address
       }).then(res =>{
+        console.log(e)
         console.log(res.data)
         if(res.data.status=='success'){
           console.log(res.data)
@@ -491,7 +498,7 @@ export default {
           this.addStoreDialog = false
         }
         else{
-          this.$message({showClose:false,message:'失败',type: 'error', center: true});
+          this.$message({showClose:false,message:'申请失败',type: 'success', center: true});
           this.addStoreDialog = false
         }
       })
