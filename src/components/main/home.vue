@@ -54,9 +54,8 @@ export default {
                 this.transRec();
         })},
         mounted() {
-    	在项目加载完成之后初始化wow
+    	//在项目加载完成之后初始化wow
             var options={
-                //默认为true
                 live:false
             };
             var wow=new WOW(options);

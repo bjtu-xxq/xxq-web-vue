@@ -22,10 +22,7 @@
                 <el-card class="leftNav">
                     <img src="../../../static/cateNav.png" class="leftImg" />
                     <div class="navItem" :class="index === showCategoryIndex ? 'cur' : ''"
-                      v-for="(item, index) in navItems"
-                      :key="index"
-                      @click="showCategory(index)">
-                      {{item.name}}
+                      v-for="(item, index) in navItems" :key="index" @click="showCategory(index)">{{item.name}}
                     </div>
                     <div class="navItem" @click="toTop()"><i class="el-icon-arrow-up" style="font-size: 23px;"></i></div>
                 </el-card>
@@ -37,8 +34,7 @@
 <!--                      //分页-->
                         <img class="img" @click="toInfo(book)" :src="book.imageUrl">
                         <el-link class="name" @click="toInfo(book)" :underline="false">
-                          <i class="el-icon-reading readIcon"></i>
-                          {{ book.name }}</el-link>
+                          <i class="el-icon-reading readIcon"></i>{{ book.name }}</el-link>
                         <div class="author">{{ book.author }}</div>
                         <div style="position: absolute; bottom: 0;">
                             <el-row type="flex" align="middle">
@@ -49,7 +45,7 @@
                                       </button>
                                 </el-col>
                             </el-row>
-                            <el-rate class="rate" v-model="book.commend" :colors="colors" disabled></el-rate>
+                            <el-rate class="rate" v-model="book.score" :colors="colors" disabled></el-rate>
                         </div>
                     </el-card>
                 </el-row>
@@ -122,7 +118,7 @@
             handleCurrentChange: function(currentPage) {
               this.currentPage = currentPage
                 //this.reload();
-              axios.get('/api/book/list/'+this.currentPage,
+              axios.get('/api/book/category/'+this.showCategoryIndex+'/list/'+this.currentPage,
                 {page:this.currentPage}).then(res => {
                   let data=res.data.result;
                 this.MAXlength=data.total/50;

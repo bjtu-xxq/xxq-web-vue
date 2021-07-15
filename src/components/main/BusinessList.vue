@@ -3,7 +3,6 @@
     <el-header style="text-align: left; font-size: 12px; height: 15%">
       <h1 class="main_title">饮茶先后台管理系统</h1>
     </el-header>
-
     <el-container>
       <el-aside style="background-color: rgb(238, 241, 246); width: 200px; height: 100%">
         <el-menu
@@ -19,7 +18,6 @@
               <i class= "el-icon-s-management"></i>
               <span>系统管理</span>
             </template>
-
             <el-menu-item-group>
 <!--              <el-menu-item @click="userFunction()">用户列表</el-menu-item>-->
 <!--              <el-menu-item index="/BusinessList" @click="businessFunction()">商家列表</el-menu-item>-->
@@ -29,14 +27,12 @@
               <el-menu-item index="/storeList">店铺列表</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-
           <el-menu-item index="/ApplyCheck">
             <i class="el-icon-s-check"></i>
             <span slot="title">审核</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
-
       <el-main>
         <el-card class="box-card" style="width: 100%; height: 99%">
           <el-table :data="businessInfo" style="width: 100%" height="100%">
@@ -75,6 +71,7 @@
 </template>
 
 <script>
+import axios from "axios";
   export default {
     name: "BusinessList",
     inject: ['reload'],
@@ -94,6 +91,7 @@
     },
 
     methods: {
+
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
       },
@@ -107,8 +105,7 @@
       },
 
       userFunction() {
-        this.$axios
-          .post('/user/all') // 请求用户列表
+        axios.post('/user/all') // 请求用户列表
           .then(successResponse => {
             if (successResponse.data.code === 200) {
               var data = successResponse.data.data;
