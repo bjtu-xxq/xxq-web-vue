@@ -305,8 +305,6 @@ export default {
           }
           console.log(successResponse.data)
             this.dialogScore = false;
-        //    var data = successResponse.data.;
-         //   this.$router.push({path: '/order', query: {unPayList: data}});
             this.activeName = 'fourth';
           this.reload();
         })

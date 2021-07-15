@@ -24,7 +24,7 @@
                                 <i class="el-icon-reading readIcon"></i>
                                 {{ book.name}}
                             </el-link>
-                            <el-rate class="rate" v-model="book.Commend" :colors="colors" disabled></el-rate>
+                            <el-rate class="rate" v-model="book.score" :colors="colors" disabled></el-rate>
                         </div>
                     </el-card>
                 </div>

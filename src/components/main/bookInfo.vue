@@ -8,7 +8,7 @@
                 <img style="height: 310px;" :src="this.bookInfo.imageUrl">
                 <div style="display: flex; margin-top: 20px; align-items: center;">
                     <div style="color: #606266;">推荐程度：</div>
-                    <el-rate style="margin-top: 4px;" v-model="bookInfo.commend" :colors="colors" disabled></el-rate>
+                    <el-rate style="margin-top: 4px;" v-model="bookInfo.score" :colors="colors" disabled></el-rate>
                 </div>
             </el-card>
             <div class="rightInfo" style="position: relative;">
