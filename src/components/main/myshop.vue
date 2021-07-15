@@ -15,33 +15,31 @@
 
             <div>
               <el-table :data="booksList" style="width: 100%" height="70%">
-                <el-table-column prop="picture" label="商品" width="100">
+                <el-table-column  label="商品" width="100">
                   <template slot-scope="scope">
-                    <img :src="scope.row.picture" class="cover">
+                    <img :src="scope.row.imageUrl" class="cover">
                   </template>
                 </el-table-column>
 
                 <el-table-column prop="name" width="400">
-                  <template slot-scope="scope">{{ scope.row.name }}</template>
+<!--                  <template slot-scope="scope">{{ scope.row.name }}</template>-->
                 </el-table-column>
 
-                <el-table-column prop="category" label="类别" width="120">
-                  <template slot-scope="scope">{{ scope.row.category }}</template>
+                <el-table-column prop="cateId" label="类别" width="120">
+<!--                  <template slot-scope="scope">{{ scope.row.cateId }}</template>-->
                 </el-table-column>
 
                 <el-table-column prop="author" label="作者" width="120">
-                  <template slot-scope="scope">{{ scope.row.author }}</template>
+<!--                  <template slot-scope="scope">{{ scope.row.author }}</template>-->
                 </el-table-column>
 
-                <el-table-column prop="number" label="单价" show-overflow-tooltip>
-                  <template slot-scope="scope">{{ scope.row.price }}</template>
+                <el-table-column prop="price" label="单价" show-overflow-tooltip>
+<!--                  <template slot-scope="scope">{{ scope.row.price }}</template>-->
                 </el-table-column>
 
-                <el-table-column
-                  prop="operation">
-                  <template slot-scope="scope">
-                    <el-button size="medium" type="primary" plain @click="moreInfo(scope.row.id)">详情</el-button>
-                    <el-button style="margin-left: 10%" size="medium" type="danger" plain @click="deleteBook(scope.row.id,scope.row.storeId)">下架</el-button>
+                <el-table-column prop="operation"><template slot-scope="scope">
+                    <el-button size="medium" type="primary" plain @click="moreInfo(booksList.bookId)">详情</el-button>
+                    <el-button style="margin-left: 10%" size="medium" type="danger" plain @click="deleteBook(booksList.bookId)">下架</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -458,6 +456,9 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
+    creat(){
+      this.storeManage();
+    },
 
     addstore(e){
       axios.post('/api/store/',{
@@ -589,56 +590,22 @@ export default {
         })
     },
     storeManage() {
-      axios.get('/api/store/id/').then(res =>{
-       console.log(res.data)
-        if (res.data.status === 'success'){
-           this.storeId=res.data.result;
-        }
-        console.log(this.storeId)
-      }).then(
-      axios.get('/api/book/store/'+this.storeId+'/list/', {
-          storeId:this.storeId
-        }).then(successResponse => {
-          console.log(successResponse)
-            let data = successResponse.data.result;
+      axios.get('/api/book/store/list/').then(successResponse => {
+          console.log(successResponse.data.result.list)
+            let data = successResponse.data.result.list;
+          this.bookInfo=data;
            this.$router.push({path: '/myshop', query: {booksList: data}});
-        }).catch(failResponse => {}))
+        }).catch(failResponse => {})
     },
-    //
-    // assistantNoPass() {
-    //   this.$axios  // 获取待审核的助理列表
-    //     .post('/store/all_assistant_application', {
-    //       phone: this.$session.get("key"), // 当前用户
-    //     })
-    //     .then(successResponse => {
-    //       if (successResponse.data.code === 200) {
-    //         if((successResponse.data.message === "普通用户") || (successResponse.data.message === "商家助理")) {
-    //           alert('无权限！');
-    //         }else {
-    //           var data = successResponse.data.data;
-    //           this.$router.push({path: '/assistantApply', query: {notPass: data}});
-    //         }
-    //       }else {
-    //         alert(successResponse.data.message);
-    //       }
-    //     })
-    //     .catch(failResponse => {
-    //
-    //     })
-    // },
 
-     moreInfo(id) {
-      this.$axios // 书籍详情
-        .post('/book/info', {
-          id: id, // 查询书籍
+
+     moreInfo(id) { // 书籍详情
+       axios.get('/api/book/'+id, {
+          bookId: id, // 查询书籍
         })
         .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            this.bookInfo = successResponse.data.data;
+            this.bookInfo = successResponse.data.result;
            this.bookDialog = true;
-          }else {
-            alert(successResponse.data.message);
-          }
         })
 
      },
@@ -667,22 +634,15 @@ export default {
 
     },
 
-    deleteBook(id) {
-      this.$axios
-        .post('/book/delete', {
-          id: id, // 删除书籍编号
-        })
+    deleteBook(id) {// 删除书籍编号
+      axios.delete('/api/book/'+id, {
+        bookId: id})
         .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            alert(successResponse.data.message);
-            var data = successResponse.data.data;
-            this.reload();
-            this.$router.push({path: '/store', query: {booksList: data}});
-          }else {
-            alert(successResponse.data.message);
-          }
+          console.log(successResponse.data.result)
+            var data = successResponse.data.result;
+           // this.reload();
+            this.$router.push({path: '/myshop', query: {booksList: data}});
         })
-
     },
 
     orderMoreInfo(id) {// 订单详情

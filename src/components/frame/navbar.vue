@@ -65,6 +65,7 @@
 
 <script>
 import 'element-ui/lib/theme-chalk/display.css'
+import axios from 'axios'
 export default {
   inject: ['reload'],
   data () {
@@ -81,6 +82,11 @@ export default {
     toHome () {
       this.$router.push({
         path: '/'
+      })
+    },
+    toSearch(){
+      this.$router.push({
+        path: '/category'
       })
     },
     toCart () {
