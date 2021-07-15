@@ -32,7 +32,8 @@
             </el-aside>
             <el-main v-loading.fullscreen.lock="loading" element-loading-background="#FFFFFF">
                 <el-row>
-                    <el-card class="row" v-for="(book, index) in Books[showCategoryIndex]" :key="index" :body-style="{ padding: '0px' }">
+                    <el-card class="row" v-for="(book, index) in Books[showCategoryIndex]" :key="index"
+                             :body-style="{ padding: '0px' }">
 <!--                      //分页-->
                         <img class="img" @click="toInfo(book)" :src="book.imageUrl">
                         <el-link class="name" @click="toInfo(book)" :underline="false">
@@ -92,44 +93,49 @@
             this.navItems=res.data.result.list;
             console.log(this.navItems);
           })
-          axios.get('/api/book/list').then(res => {
-            let data=res.data.result;
-            this.MAXlength=data.total/50;
-            this.Books[0] = res.data.result.list; //获取数据
+          axios.get('/api/book/list/'+this.currentPage,
+            {page:this.currentPage}).then(res => {
+              let data=res.data.result;
+             this.MAXlength=data.total/50;
+            console.log(this.currentPage)
+            this.Books[this.showCategoryIndex] = res.data.result.list; //获取数据
             console.log("success");
-            console.log(this.Books[0]);
-            console.log(this.MAXlength);
+            console.log(this.Books[this.showCategoryIndex]);
+            console.log(this.showCategoryIndex)
             console.log(res.data.result)
             console.log(this.navItems.length)
+            //this.reload();
           })
-          // for (let i = 1; i <= this.navItems.length; i++) {
-          //   axios.get('/api/book/category/'+this.navItems[i-1].cateId+'/list/').then(res => {
-          //     this.Books[i] = res.data.result.list; //获取数据
-          //     console.log("success");
-          //     console.log(this.Books[i]);
-          //     console.log(res.data.result)
-          //   })
-          // }
+          // axios.get('/api/book/list').then(res => {
+          //   let data=res.data.result;
+          //   this.MAXlength=data.total/50;
+          //   this.Books[0] = res.data.result.list; //获取数据
+          //   console.log("success");
+          //   console.log(this.Books[0]);
+          //   console.log(this.MAXlength);
+          //   console.log(res.data.result)
+          //   console.log(this.navItems.length)
+          // })
           this.loading = false;
         },
         methods: {
             handleCurrentChange: function(currentPage) {
               this.currentPage = currentPage
-              axios.get('/api/book/list').then(res => {
-                let data=res.data.result;
-                this.MAXlength=data.total/50;
-                this.Books[0] = res.data.result.list; //获取数据
+                //this.reload();
+              axios.get('/api/book/list/'+this.currentPage,
+                {page:this.currentPage}).then(res => {
+                //  let data=res.data.result;
+                // this.MAXlength=data.total/50;
+                console.log(this.currentPage)
+                this.Books[this.showCategoryIndex] = res.data.result.list; //获取数据
                 console.log("success");
-                console.log(this.Books[0]);
-                console.log(this.MAXlength);
+                console.log(this.Books[this.showCategoryIndex]);
                 console.log(res.data.result)
-                console.log(this.navItems.length)
-               // this.reload();
               })
             },
             //第三步：用于存放页面函数
             handleScroll() {
-                this.scroll = $(window).height() + $(document).scrollTop()//可见高以及获取垂直滚动的距离  即当前滚动的地方的窗口顶端到整个页面顶端的距离
+               this.scroll = $(window).height() + $(document).scrollTop()//可见高以及获取垂直滚动的距离  即当前滚动的地方的窗口顶端到整个页面顶端的距离
             },
             toTop() {
                 document.body.scrollTop = 0;
@@ -154,6 +160,7 @@
           },
             showCategory(index) {
                 this.showCategoryIndex = index;
+                this.currentPage=1;
                 axios.get('/api/book/category/'+this.navItems[index].cateId+'/list/').then(res => {
                 this.Books[index] = res.data.result.list; //获取数据
                   let data=res.data.result;

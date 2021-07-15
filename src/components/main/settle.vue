@@ -100,21 +100,21 @@
           <el-dialog title="新建收货信息" :visible.sync="editVisible1" width="35%">
             <el-form label-position="left" :rules="rules" ref="userInfo" :model="userInfo" label-width="100px">
               <el-form-item label="名字" prop="Logname">
-                <el-input v-model.number="userInfo.name"></el-input>
+                <el-input v-model.number="userInfo.name"  @input="change($event)"></el-input>
               </el-form-item>
-              <el-form-item label="电话" prop="Phone">
+              <el-form-item label="电话" prop="phone">
                 <el-input v-model.number="userInfo.phone"></el-input>
               </el-form-item>
-              <el-form-item label="省份" prop="Phone">
+              <el-form-item label="省份" prop="state">
                 <el-input v-model.number="userInfo.state"></el-input>
               </el-form-item>
-              <el-form-item label="城市" prop="Phone">
+              <el-form-item label="城市" prop="city">
                 <el-input v-model.number="userInfo.city "></el-input>
               </el-form-item>
-              <el-form-item label="区县" prop="Phone">
+              <el-form-item label="区县" prop="district">
                 <el-input v-model.number=" userInfo.district"></el-input>
               </el-form-item>
-              <el-form-item label="收货地址" prop="Address">
+              <el-form-item label="收货地址" prop="address">
                 <el-input type="textarea" v-model="userInfo.address"></el-input>
               </el-form-item>
             </el-form>
@@ -190,6 +190,9 @@ export default {
     // )
   },
   methods: {
+    change(e){
+      this.$forceUpdate()
+    },
     newman(){
       console.log(this.userInfo, this.userInfo.phone, this.userInfo.address)
       axios.post('/api/receiver/',

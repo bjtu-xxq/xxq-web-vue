@@ -37,6 +37,8 @@ export default {
   inject: ['reload'],
   data () {
     return {
+      map: '',
+
       input: '',
       userInfo: [],
       postage: 0,
@@ -78,19 +80,34 @@ export default {
       })
     },
     tosuccess(){
+      let paymentType=1
       console.log(this.$route.query.cart)
-      axios.put('/api/order/pay/'+this.$route.query.cart[0].orderId,
-        {paymentType:'1'}).then(res =>
-      {
-        console.log(res.data)
+      let c = {}
+      for (let i = 0; i < this.$route.query.cart.length;i++) {
+        c[this.$route.query.cart[i].orderId] = paymentType
+      }
+      console.log(c)
+      axios.put('/api/order/pay/', c).then( res =>{
         if(res.data.status='success')
-        {
-          console.log(res)
-          this.$router.push({
-            path: '/shopping/successpay'
-          })
-        }
-      })
+             {
+               console.log(res)
+               this.$router.push({
+                 path: '/shopping/successpay'
+             })}})
+    }
+      //console.log(this.$route.query.cart)
+      // axios.put('/api/order/pay/',
+      //   {paymentType:'1'}).then(res =>
+      // {
+      //   console.log(res.data)
+      //   if(res.data.status='success')
+      //   {
+      //     console.log(res)
+      //     this.$router.push({
+      //       path: '/shopping/successpay'
+      //     })
+      //   }
+      // })
 
     },
     // 编辑操作
@@ -115,14 +132,14 @@ export default {
       })
     },
     toPay (e) {
-      // if (!this.cart[0]) {
-      //   this.$message({
-      //     showClose: true,
-      //     message: '无订单信息！',
-      //     type: 'warning',
-      //     center: true
-      //   })
-      // } else {
+      if (!this.cart[0]) {
+        this.$message({
+          showClose: true,
+          message: '无订单信息！',
+          type: 'warning',
+          center: true
+        })
+      } else {
       this.$router.push({
         path: '/shopping/pay',
         query: {
@@ -132,9 +149,8 @@ export default {
           cart: this.cart
         }
       })
-      //}
+      }
     }
-  }
 }
 </script>
 
