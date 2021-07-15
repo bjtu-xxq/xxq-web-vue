@@ -480,7 +480,6 @@ export default {
         }
       })
     },
-
   handleClick(tab, event) {
       if(this.activeName === 'first') {
         this.storeManage();
