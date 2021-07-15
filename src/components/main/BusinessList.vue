@@ -29,7 +29,7 @@
           </el-submenu>
           <el-menu-item index="/ApplyCheck">
             <i class="el-icon-s-check"></i>
-            <span slot="title">审核</span>
+            <span slot="title">图标</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

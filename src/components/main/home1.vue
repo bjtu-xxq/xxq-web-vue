@@ -15,21 +15,16 @@
           @close="handleClose"
           router>
           <el-submenu index="1">
-            <template slot="title">
-              <i class= "el-icon-s-management"></i>
-              <span>系统管理</span>
-            </template>
-
+            <template slot="title"><i class= "el-icon-s-management"></i><span>系统管理</span></template>
             <el-menu-item-group>
               <el-menu-item index="/home1">用户列表</el-menu-item>
               <el-menu-item index="/businessList">商家列表</el-menu-item>
               <el-menu-item index="/storeList">店铺列表</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-
           <el-menu-item index="/applyCheck">
             <i class="el-icon-s-check"></i>
-            <span slot="title">待定</span>
+            <span slot="title">图表</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

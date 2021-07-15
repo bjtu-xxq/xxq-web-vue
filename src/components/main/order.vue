@@ -21,8 +21,8 @@
               <el-table-column label="金额" width="120"><template slot-scope="scope">￥{{ scope.row.orderMount * scope.row.price }}</template></el-table-column>
               <el-table-column prop="operation">
                 <template slot-scope="scope">
-                  <el-button size="small" type="success" plain @click="continuePay(scope.row.order.id, scope.row.order.totalPrice)">继续支付</el-button>
-                  <el-button size="small" type="danger" plain @click="deleteOrder(scope.row.order.id)">取消订单</el-button>
+                  <el-button size="small" type="success" plain @click="continuePay(scope.row.orderId)">继续支付</el-button>
+                  <el-button size="small" type="danger" plain @click="deleteOrder(scope.row.orderId)">取消订单</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -54,17 +54,17 @@
           <div>
             <el-table :data="sendList" style="width: 100%" height="100%">
               <el-table-column label="商品" width="120"><template slot-scope="scope"><img :src="scope.row.imageUrl" class="cover"></template></el-table-column>
-              <el-table-column prop="bookName" width="400"></el-table-column>
-              <el-table-column prop="storeName" label="店铺名" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="bookName"  label="商品名" width="400"></el-table-column>
+              <el-table-column prop="storeId" label="店铺名" show-overflow-tooltip></el-table-column>
               <el-table-column prop="price" label="单价" width="120"></el-table-column>
-              <el-table-column  label="数量" show-overflow-tooltip>
+              <el-table-column prop="orderMount" label="数量" show-overflow-tooltip>
                 <template slot-scope="scope"><el-input-number v-model="scope.row.orderMount" size="small" :min="1" :disabled="true">{{ scope.row.orderMount }}</el-input-number></template>
               </el-table-column>
               <el-table-column label="金额" width="120">
-                <template slot-scope="scope">￥{{ scope.row.orderMount * scope.row.orderMount}}
+                <template slot-scope="scope">￥{{ scope.row.orderMount * scope.row.price}}
               </template></el-table-column>
               <el-table-column prop="operation">
-                <template slot-scope="scope"><el-button size="small" type="success" plain @click="sureGet(scope.row.userId)">确认收货</el-button></template>
+                <template slot-scope="scope"><el-button size="small" type="success" plain @click="sureGet(scope.row.orderId)">确认收货</el-button></template>
               </el-table-column>
             </el-table>
           </div>
@@ -206,10 +206,11 @@ export default {
           })
       }else if(this.activeName === 'third') {
         // 获取已发货的订单
-        axios.post('/api/order/user/list'+ "?status=2")
+        axios.get('/api/order/user/list'+ "?status=1")
           .then(successResponse => {
             var data = successResponse.data.result.list;
               this.sendList = data;
+            console.log(successResponse.data)
           }).catch(failResponse => {
           })
       }else {// 获取已收货的订单
@@ -240,27 +241,6 @@ export default {
           if (successResponse.data.code === 200) {
             var data = successResponse.data.data;
             this.$router.push({path: '/personalSetting', query: {personalInfo: data}});
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-          alert('失败！');
-        })
-    },
-
-    storeManage() {
-      axios.post('/store/allbooks', {
-          phone: this.$session.get("key"),
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            if(successResponse.data.message === "普通用户") {
-              alert('无权限！');
-            }else {
-              var data = successResponse.data.data;
-              this.$router.push({path: '/store', query: {booksList: data}});
-            }
           }else {
             alert(successResponse.data.message);
           }
@@ -346,42 +326,27 @@ export default {
       }
     },
 
-    deleteOrder(id) {
-      axios.post('/order/cancel', {
-          id: id,
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            alert(successResponse.data.message);
-            var data = successResponse.data.data;
-            this.reload();
-            this.$router.push({path: '/order', query: {unPayList: data}});
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-          alert('失败！');
-        })
-    },
+    deleteOrder(e) {
+        axios.delete('/api/order/'+e).then(response => {
+          console.log('删除成功')
+          console.log(response)
+          console.log(e)
+          this.$message({
+            showClose: true, message: '删除成功！', type: 'success', center: true
+          });
+          this.reload();
+        });
+      },
+
 
     sureGet(id) {
-      axios.post('order/confirm', {
-          id: id,
-        })
+      axios.post('/api/order/post/'+id, {id: id})
         .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            alert(successResponse.data.message);
-            var data = successResponse.data.data;
+            var data = successResponse.data.result.list;
             this.reload();
-            this.activeName = 'third';
             this.$router.push({path: '/order', query: {unPayList: data}});
-          }else {
-            alert(successResponse.data.message);
-          }
         })
         .catch(failResponse => {
-          alert('失败！');
         })
     },
 

@@ -71,7 +71,7 @@
                 MAXlength: 0,
                 bookPath: 1,
                 searchText: "", //搜索关键字
-                showCategoryIndex: 0,
+                showCategoryIndex: -1,
                 navItems: [],
               Books: [
                  []
@@ -115,7 +115,33 @@
         methods: {
             handleCurrentChange: function(currentPage) {
               this.currentPage = currentPage
+              console.log(this.showCategoryIndex)
                 //this.reload();
+              if(this.showCategoryIndex=='-1')
+              {
+                axios.get('/api/book/list/'+this.currentPage).then(res => {
+                  let data=res.data.result;
+                  this.MAXlength=data.total/50;
+                  console.log(this.currentPage)
+                  this.Books[this.showCategoryIndex] = res.data.result.list; //获取数据
+                  console.log("success");
+                  console.log(this.Books[this.showCategoryIndex]);
+                  console.log(this.showCategoryIndex)
+                  //this.reload();
+              })}
+              else if(this.showCategoryIndex=='0') {
+                axios.get('/api/book/category/' + 1 + '/list/' + this.currentPage,
+                  {page: this.currentPage}).then(res => {
+                  let data = res.data.result;
+                  this.MAXlength = data.total / 50;
+                  console.log(this.currentPage)
+                  this.Books[this.showCategoryIndex] = res.data.result.list; //获取数据
+                  console.log("success");
+                  console.log(this.Books[this.showCategoryIndex]);
+                  console.log(res.data.result)
+                })}
+              else{
+                console.log(this.showCategoryIndex)
               axios.get('/api/book/category/'+this.showCategoryIndex+'/list/'+this.currentPage,
                 {page:this.currentPage}).then(res => {
                   let data=res.data.result;
@@ -126,7 +152,7 @@
                 console.log(this.Books[this.showCategoryIndex]);
                 console.log(res.data.result)
               })
-            },
+            }},
             //第三步：用于存放页面函数
             handleScroll() {
                this.scroll = $(window).height() + $(document).scrollTop()//可见高以及获取垂直滚动的距离  即当前滚动的地方的窗口顶端到整个页面顶端的距离
