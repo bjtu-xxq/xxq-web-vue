@@ -74,33 +74,23 @@
             <el-table :data="getList" style="width: 100%" height="100%">
               <el-table-column  label="商品" width="120">
                 <template slot-scope="scope"><img :src="scope.row.imageUrl" class="cover"></template>
-              </el-table-column>
-
-              <el-table-column prop="name" width="400">
-
-              </el-table-column>
-
-              <el-table-column prop="storeName" label="店铺名" show-overflow-tooltip>
-              </el-table-column>
-
-              <el-table-column prop="price" label="单价" width="120">
-              </el-table-column>
-
+                </el-table-column>
+              <el-table-column prop="bookName"  label="商品名" width="400"></el-table-column>
+              <el-table-column prop="storeId" label="店铺名" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="price" label="单价" width="120"></el-table-column>
               <el-table-column prop="orderMount" label="数量" show-overflow-tooltip>
               </el-table-column>
-
               <el-table-column prop="totalPrice" label="金额" width="120">
-                <template slot-scope="scope">￥{{ scope.row.rderMount *scope.row.price }}</template>
+                <template slot-scope="scope">￥{{ scope.row.orderMount *scope.row.price }}</template>
               </el-table-column>
-
               <el-table-column
                 prop="operation">
                 <template slot-scope="scope">
-                  <el-button size="small" type="primary" plain @click="clickScore(getList.id, getList.name)">书籍评分</el-button>
+                  <el-button size="small" type="primary" plain @click="clickScore(scope.row.bookId, scope.row.bookName)">书籍评分</el-button>
                   <el-dialog title="书籍评分" :visible.sync="dialogScore">
                     <el-form :model="bookScore">
                       <el-form-item label="书籍名称">
-                        <el-input v-model="bookScore.name" autocomplete="off" style="width: 500px" disabled>{{bookScore.name}}</el-input>
+                        <el-input v-model="bookScore.bookName" autocomplete="off" style="width: 500px" disabled>{{bookScore.bookName}}</el-input>
                       </el-form-item>
 
                       <el-form-item label="用户评分">
@@ -214,10 +204,11 @@ export default {
           }).catch(failResponse => {
           })
       }else {// 获取已收货的订单
-        axios.post('/api/order/user/list'+ "?status=3")
+        axios.get('/api/order/user/list'+ "?status=3")
           .then(successResponse => {
             var data = successResponse.data.result.list;
               this.getList = data;
+            console.log(this.getList)
           }).catch(failResponse => {
           })
       }
@@ -233,65 +224,7 @@ export default {
         }})
     },
 
-    personalInfoSetting() {
-      axios.post('/entity', {
-          id: this.$session.get("key"),
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            var data = successResponse.data.data;
-            this.$router.push({path: '/personalSetting', query: {personalInfo: data}});
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-          alert('失败！');
-        })
-    },
 
-    storeInfoSetting() {
-      axios
-        .post('/store/info', {
-          phone: this.$session.get("key"),
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            if((successResponse.data.message === "普通用户")) {
-              alert('无权限！');
-            }else {
-              var data = successResponse.data.data;
-              this.$router.push({path: '/storeInfo', query: {storeInfo: data}});
-            }
-          }else {
-            alert("查看失败，请重试！");
-          }
-        })
-        .catch(failResponse => {
-          alert('失败！');
-        })
-    },
-
-    assistantNoPass() {
-      axios.post('/store/all_assistant_application', {
-          phone: this.$session.get("key"), // 当前用户
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            if((successResponse.data.message === "普通用户")) {
-              alert('无权限！');
-            }else {
-              var data = successResponse.data.data;
-              this.$router.push({path: '/assistantApply', query: {notPass: data}});
-            }
-          }else {
-            alert(successResponse.data.message);
-          }
-        })
-        .catch(failResponse => {
-          alert("失败！");
-        })
-    },
 
     continuePay(id, totalPrice) {
       this.payDialog = true;
@@ -305,18 +238,13 @@ export default {
             id: this.id,
           })
           .then(successResponse => {
-            if (successResponse.data.code === 200) {
-              alert(successResponse.data.message);
+
               this.payDialog = false;
               var data = successResponse.data.data;
               this.reload();
               this.$router.push({path: '/order', query: {unPayList: data}});
-            }else {
-              alert(successResponse.data.message);
-            }
           })
           .catch(failResponse => {
-            alert('失败！');
           })
       }else if(operation === 'giveUp') {
         alert("未支付！");
@@ -340,11 +268,22 @@ export default {
 
 
     sureGet(id) {
-      axios.post('/api/order/post/'+id, {id: id})
+      axios.put('/api/order/finish/'+id,{orderId: id})
         .then(successResponse => {
-            var data = successResponse.data.result.list;
-            this.reload();
-            this.$router.push({path: '/order', query: {unPayList: data}});
+            console.log(successResponse.data)
+
+            if(successResponse.data.status=='success'){
+              var data = successResponse.data.result.list;
+              this.$router.push({path: '/order', query: {unPayList: data}});
+              this.$message({showClose:false ,message:'确认收货成功', center:true,type:'success'})
+              this.reload();
+            }
+            else {
+              this.$message({showClose:false ,message:'确认收货失败', center:true,type:'error'})
+              this.reload();
+            }
+
+
         })
         .catch(failResponse => {
         })
@@ -352,27 +291,24 @@ export default {
 
     clickScore(bookId, bookName) {
       this.bookId = bookId;
-      this.bookScore.name = bookName;
+      this.bookScore.bookName = bookName;
+      console.log(this.bookId)
+      console.log(this.bookScore.bookName)
       this.dialogScore = true;
     },
 
     scoreBook() {
-      axios.post('/order/score', {
-          userId: this.$session.get("key"), // 当前用户
-          bookId: this.bookId,
-          score: this.bookScore.score,
-        })
+      axios.post('/api/book/rate/', {bookId: this.bookId, score: this.bookScore.score,})
         .then(successResponse => {
-          if (successResponse.data.code === 200) {
+          if(successResponse.data.status='success'){
             alert("感谢您的评分！");
-            this.dialogScore = false;
-            var data = successResponse.data.data;
-            this.reload();
-            this.$router.push({path: '/order', query: {unPayList: data}});
-            this.activeName = 'fourth';
-          }else {
-            alert(successResponse.data.message);
           }
+          console.log(successResponse.data)
+            this.dialogScore = false;
+        //    var data = successResponse.data.;
+         //   this.$router.push({path: '/order', query: {unPayList: data}});
+            this.activeName = 'fourth';
+          this.reload();
         })
         .catch(failResponse => {
           alert('失败！');

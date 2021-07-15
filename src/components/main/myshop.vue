@@ -23,7 +23,7 @@
                 </el-table-column>
 
                 <el-table-column label="类别" width="120">
-                  <template slot-scope="scope">{{ scope.row.cateId }}</template>
+                  <template slot-scope="scope">{{ scope.row.cname }}</template>
                 </el-table-column>
 
                 <el-table-column  label="作者" width="120">
@@ -498,11 +498,6 @@ export default {
       })
     },
     infoUpdate() {
-      // axios.get('/api/store/id/').then(res =>{
-      //   console.log(res.data)
-      //   if(res.data.status=='success')
-      //     this.storeId=res.data.result;
-      // }).then(
         axios.put('/api/store', {
           phone: this.storeInfo.phone,
           storeId:  this.storeId,
@@ -547,7 +542,6 @@ export default {
       })
       this.newBookDialog = false
   },
-
     personalInfoSetting() {
       axios.post('/entity', {
           id: this.$session.get("key"),
@@ -572,8 +566,6 @@ export default {
            this.$router.push({path: '/myshop', query: {booksList: data}});
         }).catch(failResponse => {})
     },
-
-
      moreInfo(id) { // 书籍详情
        axios.get('/api/book/'+id, {
           bookId: id, // 查询书籍
@@ -583,16 +575,14 @@ export default {
             this.bookInfo = successResponse.data.result;
            this.bookDialog = true;
         })
-
      },
-
     updateBook(id) {
     axios.put('/api/book/info/'+id, {
           bookId: id,
           name: this.bookInfo.name,
           author: this.bookInfo.author,
           price: this.bookInfo.price,
-          cateId:this.newBookInfo.category,
+          cname:this.newBookInfo.category,
         })
         .then(successResponse => {
           console.log( successResponse.data)
@@ -628,23 +618,6 @@ export default {
         })
     },
 
-    sendBook(id) {
-      this.$axios
-        .post('/order/send', {
-          id: id, // 订单编号
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            alert(successResponse.data.message); // 已发货
-            var data = successResponse.data.data; // 重新加载订单
-            this.reload();
-            this.orderList = data;
-          }
-        })
-        .catch(failResponse => {
-
-        })
-    }
   },
 
   mounted() {

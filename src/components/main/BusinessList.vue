@@ -147,10 +147,8 @@ import axios from "axios";
             }
           })
           .catch(failResponse => {
-
           })
       },
-
       checkFunction() {
         this.$axios
           .post('/business/applied') // 请求申请列表

@@ -167,7 +167,7 @@
               }else{
             axios.get('/api/book/search/'+this.searchText+'/list/').then(res =>{
               console.log(res.data)
-            this.Books[0]=res.data.result.list;
+            this.Books[this.showCategoryIndex]=res.data.result.list;
               let data=res.data.result;
               this.MAXlength=data.total/50;
               this.$message({showClose: true, message: '查询成功！', type: 'success', center: true})
