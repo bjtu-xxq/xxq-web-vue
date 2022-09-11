@@ -68,7 +68,7 @@
                   prop="operation">
                   <template slot-scope="scope">
                     <el-button size="small" type="primary" plain @click="businessInfoDialog = true">详情</el-button>
-                    <el-button size="small" type="success" plain @click="">通过</el-button>
+                    <el-button size="small" type="success" pls1>通过</el-button>
                     <el-button size="small" type="danger" plain @click="handleDelete(scope.$index, scope.row)">拒绝</el-button>
                   </template>
                 </el-table-column>
